@@ -9,5 +9,5 @@ class Citizen(Base):
     PhoneNumber=Column(String)
     Email=Column(String,unique=True,index=True)
     Address=Column(String)
-    password_hash = Column(String, nullable=False)
-    city = Column(String, nullable=False)
+    Password_hash = Column(String, nullable=False)
+    City = Column(String, nullable=False)
