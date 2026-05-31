@@ -1,4 +1,4 @@
-from sqlalchemy import Column,Integer,String,Enum,ForeignKey,Text
+from sqlalchemy import Column,Integer,String,ForeignKey,Text
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
@@ -11,7 +11,7 @@ class Vendor(Base):
     users=relationship("User",back_populates="vendor")
 
     business_name=Column("String",index=True)
-    
+
     phone=Column(String,index=True)
     city=Column(String,index=True)
     
