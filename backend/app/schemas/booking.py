@@ -1,24 +1,23 @@
 from pydantic import BaseModel,Field
 from datetime import date, time
-from typing import Optional
+
+from app.schemas.service import ServiceOut
 
 
 
 class BookingCreate(BaseModel):
     service_id: int
     event_date: date
-    event_time: time
+    event_time: time 
     total_price: float = Field(..., gt=0)
-    status: Optional[str] = "pending"
-
-
 
 class BookingReceipt(BaseModel):
-    booking_id: int
-    service_name: str
-    vendor_name: str            # تمت الإضافة: ليكون الوصل أكثر دقة
+    id: int
     event_date: date
-    event_time: time
     total_price: float
     status: str
+    service: ServiceOut # يعطيك تفاصيل الخدمة المحجوزة
     message: str = "تم تأكيد حجزك بنجاح! شكراً لاختيارك مناسبتي."
+
+    class Config:
+        from_attributes = True

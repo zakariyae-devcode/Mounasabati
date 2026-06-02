@@ -1,6 +1,6 @@
 from pydantic import BaseModel,Field
 from typing import Optional
-
+from app.schemas.user import UserOut
 
 
 class ClientCrete(BaseModel):
@@ -17,6 +17,7 @@ class ClientUpdate(BaseModel):
 
 
 class ClientOut(BaseModel):
+    user:UserOut
     Phone:str
     City:str
     Address:str

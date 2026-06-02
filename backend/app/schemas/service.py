@@ -1,8 +1,9 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-from app.schemas import vendor
+from app.schemas.vendor import VendorOut
+
 class ServiceCreate(BaseModel):
-    service_name: str = Field(..., min_length=4, max_length=16)
+    name: str = Field(..., min_length=4, max_length=50)
     price_base: float = Field(..., gt=0)
     image: Optional[str] = None
     status: Optional[str] = "active" 
@@ -14,19 +15,14 @@ class ServiceUpdate(BaseModel):
 
 class ServiceOut(BaseModel):
     id: int 
-    service_name: str
+    name: str
     price_base: float
     image: Optional[str] 
     status: str
-  
 
     class Config: 
         from_attributes = True
 
 class ServiceDetailOut(ServiceOut):
-   
     description: Optional[str] = None
-    vendor: vendor.VendorOut 
-
-    class Config:
-        from_attributes = True
+    vendor: VendorOut # عرض بيانات المزود مع الخدمة

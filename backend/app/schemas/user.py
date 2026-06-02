@@ -2,29 +2,28 @@ from pydantic import BaseModel ,EmailStr,Field
 from typing import Optional
 
 class UserCreate(BaseModel):
-    Username:str=Field(...,min_length=4,max_length=16)
-    Email:EmailStr
-    First_name:Optional[str]=None
-    Last_name:Optional[str]=None
-    CIN:str=Field(...,pattern=r"^[A-Z,a-z]{1,2}\d{6,7}$") # exmple => d1234567 FB118450
-    Password:str=Field(...,min_length=8,max_length=16)
-    Role: Optional[str]="client"
-
-    ImageProfile=Optional[str]=None
+    username: str = Field(..., min_length=4, max_length=16)
+    email: EmailStr
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    CIN: str = Field(..., pattern=r"^[A-Z,a-z]{1,2}\d{5,7}$")
+    password: str = Field(..., min_length=8, max_length=100)
+    role: Optional[str] = "client"
+    image_profile: Optional[str] = None
 
 
 
 class UserOut(BaseModel):
-    Username:str=Field(...,min_length=4,max_length=16)
-    Email:EmailStr
-    First_name:Optional[str]=None
-    Last_name:Optional[str]=None
-    CIN:str
-    Role:str
+    id: int
+    username: str
+    email: EmailStr
+    first_name: Optional[str]
+    last_name: Optional[str]
+    CIN: str
+    role: str
 
-
-    class cofig:
-        from_attributes=True
+    class Config: 
+        from_attributes = True
 
 
 class UserUpdate(BaseModel):
