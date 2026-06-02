@@ -19,7 +19,7 @@ class User(Base):
     CIN = Column(String, unique=True, index=True)
     role = Column(Enum(UserRole), default=UserRole.client) 
     password = Column(String)
-
+    image = Column(String, nullable=True, default="default_service.png")
     client_profile = relationship("Client", back_populates="user")
     bookings = relationship("Booking", back_populates="user")
 

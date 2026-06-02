@@ -14,5 +14,6 @@ class Vendor(Base):
     address = Column(String, index=True)
     description = Column(Text, nullable=True)
 
+ 
     user = relationship("User", back_populates="vendor_profile")
     services = relationship("Service", back_populates="vendor")
