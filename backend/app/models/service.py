@@ -17,6 +17,6 @@ class Service(Base):
     price_base = Column(DECIMAL(10, 2), default=0.00) # إضافة أرقام عشرية
     status = Column(Enum(ServiceStatus), default=ServiceStatus.active)
     image = Column(String, nullable=True, default="default_service.png")
-
+    slug = Column(String, unique=True, index=True)
     vendor = relationship("Vendor", back_populates="services")
     bookings = relationship("Booking", back_populates="service")
