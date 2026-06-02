@@ -1,6 +1,7 @@
 from sqlalchemy import Column,Integer,String,ForeignKey,Text,DateTime
 from sqlalchemy.orm import relationship
-from app.core.database import Base
+from core.database import Base
+
 
 import datetime
 class Vendor(Base):
