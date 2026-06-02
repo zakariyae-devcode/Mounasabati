@@ -1,12 +1,14 @@
 from pydantic import BaseModel,Field
-from typing import Optional
 from datetime import date, time
+from typing import Optional
+
 
 
 class BookingCreate(BaseModel):
-        Event_date:str=Field(...,min_length=4,max_length=16)
-        Total_price:float
-        Status:str=Field(...,pattern=r"^(pending|confirmed|paid|cancelled)$")
+        event_date: date
+        event_time: time
+        total_price: float = Field(..., gt=0)
+        status: Optional[str] = "pending"
 
 
 

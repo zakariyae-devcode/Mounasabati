@@ -5,9 +5,10 @@ from typing import Optional
 
 class VendorCreate(BaseModel):
     ServiceName:str=Field(...,min_length=4,max_length=16)
-    Price_base:float
+    Price_base:float = Field(..., gt=0)
     Image:Optional[str]=None
-    status:str=Field(...,pattern=r"^(active|inactive)$")
+    status:Optional[str]=""
+    
 
 class VendorUpdate(BaseModel):
     ServiceName:Optional[str]=None
