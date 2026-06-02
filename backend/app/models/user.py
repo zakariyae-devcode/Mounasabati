@@ -20,8 +20,7 @@ class User(Base):
     role = Column(Enum(UserRole), default=UserRole.client) 
     password = Column(String)
 
-    client_profile = relationship("Client", back_populates="user", uselist=False)
-    vendor_profile = relationship("Vendor", back_populates="user", uselist=False)
+    client_profile = relationship("Client", back_populates="user")
     bookings = relationship("Booking", back_populates="user")
 
 
