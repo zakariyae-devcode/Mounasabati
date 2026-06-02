@@ -1,6 +1,7 @@
-from sqlalchemy import Column,Integer,String,ForeignKey,Enum,DECIMAL,Text
+from sqlalchemy import Column,Integer,String,ForeignKey,Enum,DECIMAL,Text,DateTime
 from sqlalchemy.orm import relationship
 from app.core.database import Base
+import datetime
 
 import enum
 
@@ -21,3 +22,8 @@ class Service(Base):
     slug = Column(String, unique=True, index=True)
     vendor = relationship("Vendor", back_populates="services")
     bookings = relationship("Booking", back_populates="service")
+
+
+    created_at = Column(DateTime, default=datetime.timezone.utcnow)
+    
+    updated_at = Column(DateTime, default=datetime.timezone.utcnow)

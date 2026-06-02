@@ -1,9 +1,12 @@
-from sqlalchemy import Column,Integer,ForeignKey,Date,Time,DECIMAL,Enum
+from sqlalchemy import Column,Integer,ForeignKey,Date,Time,DECIMAL,Enum,DateTime
 
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
 import enum
+
+import datetime
+
 
 class BookingStatus(enum.Enum):
     pending = "pending"
@@ -26,4 +29,9 @@ class Booking(Base):
 
     user = relationship("User", back_populates="bookings")
     service = relationship("Service", back_populates="bookings")
+
+    created_at = Column(DateTime, default=datetime.timezone.utcnow)
+
+    updated_at = Column(DateTime, default=datetime.timezone.utcnow)
+
 

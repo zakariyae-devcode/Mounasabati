@@ -25,4 +25,4 @@ class ServiceOut(BaseModel):
 
 class ServiceDetailOut(ServiceOut):
     description: Optional[str] = None
-    vendor: VendorOut # عرض بيانات المزود مع الخدمة
+    vendor: VendorOut 

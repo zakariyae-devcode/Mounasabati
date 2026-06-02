@@ -1,7 +1,8 @@
-from sqlalchemy import Column,Integer,String,ForeignKey,Text,DATETIME
+from sqlalchemy import Column,Integer,String,ForeignKey,Text,DateTime
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
+import datetime
 class Vendor(Base):
     __tablename__ = "vendors"
     id = Column(Integer, primary_key=True, index=True)
@@ -17,3 +18,8 @@ class Vendor(Base):
  
     user = relationship("User", back_populates="vendor_profile")
     services = relationship("Service", back_populates="vendor")
+
+
+    created_at = Column(DateTime, default=datetime.timezone.utcnow)
+
+    updated_at = Column(DateTime, default=datetime.timezone.utcnow)

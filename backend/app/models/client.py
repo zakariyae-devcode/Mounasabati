@@ -1,6 +1,8 @@
-from sqlalchemy import Column,Integer,String,ForeignKey,Text
+from sqlalchemy import Column,Integer,String,ForeignKey,Text,DateTime
 from sqlalchemy.orm import relationship
 from app.core.database import Base
+
+import datetime
 
 
 
@@ -14,3 +16,7 @@ class Client(Base):
     address = Column(String, index=True,nullable=True)
 
     user = relationship("User", back_populates="client_profile")
+
+    created_at = Column(DateTime, default=datetime.timezone.utcnow)
+
+    updated_at = Column(DateTime, default=datetime.timezone.utcnow)
