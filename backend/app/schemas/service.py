@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-
+from app.schemas import vendor
 class ServiceCreate(BaseModel):
     service_name: str = Field(..., min_length=4, max_length=16)
     price_base: float = Field(..., gt=0)
@@ -18,6 +18,15 @@ class ServiceOut(BaseModel):
     price_base: float
     image: Optional[str] 
     status: str
+  
 
     class Config: 
+        from_attributes = True
+
+class ServiceDetailOut(ServiceOut):
+   
+    description: Optional[str] = None
+    vendor: vendor.VendorOut 
+
+    class Config:
         from_attributes = True
