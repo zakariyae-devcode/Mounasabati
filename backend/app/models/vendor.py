@@ -1,26 +1,32 @@
-from sqlalchemy import Column,Integer,String,ForeignKey,Text,DateTime
-from sqlalchemy.orm import relationship
-from app.core.database import Base
+from datetime import datetime
+from typing import Optional, List
+from sqlmodel import SQLModel, Field, Relationship
+import uuid
+from uuid import UUID
+from app.models.user import User
+from app.models.service import Service
 
 
-import datetime
-class Vendor(Base):
+class Vendor(SQLModel, table=True):
     __tablename__ = "vendors"
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    
-    business_name = Column(String, index=True) # حذف الكوتيشن الزائدة حول String
-    phone = Column(String, index=True)
-    city = Column(String, index=True)
-    rc_number = Column(String, index=True)
-    address = Column(String, index=True)
-    description = Column(Text, nullable=True)
+    id: UUID = Field(
+        default_factory=uuid.uuid4, 
+        primary_key=True, 
+        index=True, 
+        nullable=False
+    )
+    user_id: UUID = Field(foreign_key="users.id", nullable=False)
 
- 
-    user = relationship("User", back_populates="vendor_profile")
-    services = relationship("Service", back_populates="vendor")
+    phone: str = Field(default=None, index=True)
+    city: str = Field(default=None, index=True)
+    address: str = Field(default=None, index=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    user: Optional["User"] = Relationship(back_populates="client_profile")
+    services: List["Service"] = Relationship(back_populates="vendor")
 
-    updated_at = Column(DateTime,default=datetime.datetime.utcnow)
+
+
+
