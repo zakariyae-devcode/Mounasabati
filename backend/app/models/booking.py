@@ -1,12 +1,13 @@
-from sqlalchemy import Column,Integer,ForeignKey,Date,Time,DECIMAL,Enum,DateTime
 
-from sqlalchemy.orm import relationship
-from app.core.database import Base
-
-import enum
+from typing import Optional
+from sqlmodel import SQLModel, Field, Relationship
 
 import datetime
-
+import uuid
+from uuid import UUID
+import enum
+from app.models.user import User
+from app.models.service import Service
 
 class BookingStatus(enum.Enum):
     pending = "pending"
@@ -15,23 +16,27 @@ class BookingStatus(enum.Enum):
     cancelled = "cancelled"
 
 
-
-class Booking(Base):
+class Booking(SQLModel,table=True):
     __tablename__ = "bookings"
-    id = Column(Integer, primary_key=True, index=True)
-    service_id = Column(Integer, ForeignKey("services.id")) 
-    user_id = Column(Integer, ForeignKey("users.id"))
+    id: UUID = Field(
+            default_factory=uuid.uuid4,
+            primary_key=True,
+            index=True,
+            nullable=False,
+            unique=True
+        )
+    service_id: UUID = Field(foreign_key="services.id")
+    user_id: UUID = Field(foreign_key="users.id")
+    event_date: datetime.date = Field(nullable=False)
+    event_time: datetime.time  =Field(nullable=False)
+    total_price: float = Field(default=0.0)
+    status: BookingStatus = Field(default=BookingStatus.pending)
 
-    event_date = Column(Date, index=True, nullable=False) 
-    event_time = Column(Time, index=True, nullable=False)
-    total_price = Column(DECIMAL(10, 2), default=0.00)
-    status = Column(Enum(BookingStatus), default=BookingStatus.pending)
+    user: Optional["User"] = Relationship(back_populates="user")
+    service: Optional["Service"] = Relationship(back_populates="service")
 
-    user = relationship("User", back_populates="bookings")
-    service = relationship("Service", back_populates="bookings")
 
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
-    updated_at = Column(DateTime, default=datetime.datetime.utcnow)
+
 
 

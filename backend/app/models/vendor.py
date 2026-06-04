@@ -24,8 +24,8 @@ class Vendor(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 
-    user: Optional["User"] = Relationship(back_populates="client_profile")
-    services: List["Service"] = Relationship(back_populates="vendor")
+    user: Optional["User"] = Relationship(back_populates="user")
+    service: List["Service"] = Relationship(back_populates="service")
 
 
 

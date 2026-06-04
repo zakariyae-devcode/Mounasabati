@@ -27,4 +27,4 @@ class Client(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
     # العلاقات
-    user: Optional["User"] = Relationship(back_populates="client_profile")
+    user: Optional["User"] = Relationship(back_populates="user")

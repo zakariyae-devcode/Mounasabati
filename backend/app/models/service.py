@@ -27,20 +27,26 @@ class Service(SQLModel, table=True):
             index=True,
             nullable=False,
             unique=True)
+    
     vendor_id: UUID = Field(foreign_key="vendors.id")
+    user_id: UUID = Field(foreign_key="users.id")
+    review_id: UUID = Field(foreign_key="reviews.id")
+    booking_id: UUID = Field(foreign_key="bookings.id")
+
+
     name: str = Field(index=True)
     description: str = Field(nullable=True)
     price: float = Field(default=0.0)
     image: str = Field(default="default_service.png")
-    status: ServiceStatus = Field(default=ServiceStatus.active)
+    status: ServiceStatus = Field(default=ServiceStatus.active,nullable=False)
     created_at: datetime = Field(default_factory=datetime.datetime.utcnow)  
     updated_at:datetime=Field(default_factory=datetime.datetime.utcnow)  
 
      
     # العلاقات
-    vendor: Optional["Vendor"] = Relationship(back_populates="services")
-    user: Optional["Client"] = Relationship(back_populates="client_profile")
-    reviews: List["Review"] = Relationship(back_populates="service")
-    bookings: List["Booking"] = Relationship(back_populates="service")
+    vendor: Optional["Vendor"] = Relationship(back_populates="vendor")
+    user: Optional["Client"] = Relationship(back_populates="user")
+    review: List["Review"] = Relationship(back_populates="review")
+    booking: List["Booking"] = Relationship(back_populates="booking")
     
     

@@ -42,7 +42,7 @@ class User(SQLModel,table=True):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 
-    client_profile:Optional["Client"] =Relationship(back_populates="user")
-    vendor_profile:Optional["Vendor"] =Relationship(back_populates="user")
-    reviews: List["Review"] = Relationship(back_populates="user")
-    bookings: List["Booking"] = Relationship(back_populates="user") 
+    client_profile:Optional["Client"] =Relationship(back_populates="client_profile")
+    vendor_profile:Optional["Vendor"] =Relationship(back_populates="vendor_profile")
+    review: List["Review"] = Relationship(back_populates="review")
+    booking: List["Booking"] = Relationship(back_populates="booking") 

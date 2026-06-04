@@ -1,39 +1,42 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Text, CheckConstraint, DateTime
-from sqlalchemy.orm import relationship
+
+from typing import Optional
+from sqlmodel import SQLModel, Field, Relationship,CheckConstraint
+
 import datetime
-from app.core.database import Base
+import uuid
+from uuid import UUID
 
-class Review(Base):
-    __tablename__ = "reviews"
+from app.models.user import User
+from app.models.service import Service
 
-    id = Column(Integer, primary_key=True, index=True)
-   
-   
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    
-    service_id = Column(Integer, ForeignKey("services.id"), nullable=False)
-    
-    
-    rating = Column(Integer, nullable=False)
-    
-    comment = Column(Text, nullable=True)
-    
-    
-  
+class Review(SQLModel,table=True):
+    __tablename__="reviews"
 
-  
-    user = relationship("User", back_populates="reviews")
-    service = relationship("Service", back_populates="reviews")
+    id: UUID = Field(
+        default_factory=uuid.uuid4, 
+        primary_key=True, 
+        index=True, 
+        nullable=False
+    )
+
+    service_id: UUID = Field(foreign_key="services.id")
+    user_id: UUID = Field(foreign_key="users.id")
+
+    rating:Optional[int]=Field()
+
+    created_at: datetime = Field(default_factory=datetime.datetime.utcnow)  
+    updated_at:datetime=Field(default_factory=datetime.datetime.utcnow)  
+
+    user: Optional["User"] = Relationship(back_populates="user")
+    service: Optional["Service"] = Relationship(back_populates="service")
 
 
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
-
-    updated_at = Column(DateTime, default=datetime.datetime.utcnow)
-   
     __table_args__ = (
         CheckConstraint('rating >= 1 AND rating <= 5', name='check_rating_range'),
     )
 
-# تأكد من إضافة 'reviews' في كلاس User و Service
-# في كلاس User: reviews = relationship("Review", back_populates="user")
-# في كلاس Service: reviews = relationship("Review", back_populates="service")
+
+
+
+    
+
