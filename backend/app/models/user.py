@@ -1,33 +1,48 @@
-from sqlalchemy import Column,Integer,String,Enum,DateTime
-from sqlalchemy.orm import relationship
-from app.core.database import Base
 import enum
+from datetime import datetime
+from typing import Optional, List
+from sqlmodel import SQLModel, Field, Relationship
 
-import datetime
+import uuid
+from uuid import UUID
+from app.models.client import Client
+from app.models.vendor import Vendor
+from app.models.reviews import Review
+from   app.models.booking import Booking
 
 
-class UserRole(enum.Enum):
-    client="client"
-    vendor="vendor"
+class UserRole(str, enum.Enum):
+    client = "client"
+    vendor = "vendor"
 
 
-class User(Base):
+
+
+class User(SQLModel,table=True):
     __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    first_name = Column(String, index=True, nullable=True)
-    last_name = Column(String, index=True, nullable=True)
-    email = Column(String, unique=True, index=True)
-    CIN = Column(String, unique=True, index=True)
-    role = Column(Enum(UserRole), default=UserRole.client) 
-    password = Column(String)
-    image = Column(String, nullable=True, default="default_service.png")
-    client_profile = relationship("Client", back_populates="user")
-    bookings = relationship("Booking", back_populates="user")
+    id:UUID=Field(
+            default_factory=uuid.uuid4,
+            primary_key=True,
+            index=True,
+            nullable=False,
+            unique=True
+        )
+    
+    username: str = Field(unique=True, index=True, nullable=False)
+    email: str = Field(unique=True, index=True, nullable=False)
+    password: str = Field(nullable=False)
+    CIN: str = Field(unique=True, index=True, nullable=False)
+    
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    role: UserRole = Field(default=UserRole.client)
+    image: str = Field(default="default_service.png")
+    
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
-    created_at = Column(DateTime,default=datetime.datetime.utcnow)
 
-    updated_at = Column(DateTime, default=datetime.datetime.utcnow)
-
-
-
+    client_profile:Optional["Client"] =Relationship(back_populates="user")
+    vendor_profile:Optional["Vendor"] =Relationship(back_populates="user")
+    reviews: List["Review"] = Relationship(back_populates="user")
+    bookings: List["Booking"] = Relationship(back_populates="user") 

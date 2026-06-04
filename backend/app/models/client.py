@@ -1,22 +1,30 @@
-from sqlalchemy import Column,Integer,String,ForeignKey,Text,DateTime
-from sqlalchemy.orm import relationship
-from app.core.database import Base
+from datetime import datetime
+from typing import Optional
+from sqlmodel import SQLModel, Field, Relationship
+import uuid
+from uuid import UUID
+from app.models import User
 
-import datetime
-
-
-
-class Client(Base):
+class Client(SQLModel, table=True):
     __tablename__ = "clients"
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
     
-    phone = Column(String, index=True,nullable=True)
-    city = Column(String, index=True,nullable=True)
-    address = Column(String, index=True,nullable=True)
+    # المعرف الأساسي UUID إجباري
+    id: UUID = Field(
+        default_factory=uuid.uuid4, 
+        primary_key=True, 
+        index=True, 
+        nullable=False
+    )
+    
+    # الربط بجدول المستخدمين عبر الـ UUID الإجباري
+    user_id: UUID = Field(foreign_key="users.id", nullable=False)
+    
+    phone: Optional[str] = Field(default=None, index=True)
+    city: Optional[str] = Field(default=None, index=True)
+    address: Optional[str] = Field(default=None, index=True)
 
-    user = relationship("User", back_populates="client_profile")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
-
-    updated_at = Column(DateTime, default=datetime.datetime.utcnow)
+    # العلاقات
+    user: Optional["User"] = Relationship(back_populates="client_profile")
