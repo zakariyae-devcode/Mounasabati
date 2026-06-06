@@ -10,7 +10,7 @@ from app.models.vendor import Vendor
 from app.models.reviews import Review
 from   app.models.booking import Booking
 
-
+from app.models.notification import Notification
 class UserRole(str, enum.Enum):
     client = "client"
     vendor = "vendor"
@@ -46,3 +46,4 @@ class User(SQLModel,table=True):
     vendor_profile:Optional["Vendor"] =Relationship(back_populates="vendor_profile")
     review: List["Review"] = Relationship(back_populates="review")
     booking: List["Booking"] = Relationship(back_populates="booking") 
+    notifications: List["Notification"] = Relationship(back_populates="user")

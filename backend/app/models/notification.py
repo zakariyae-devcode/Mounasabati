@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Optional
 from sqlmodel import SQLModel, Field, Relationship
 from app.models.user import User
+
 class Notification(SQLModel, table=True):
     __tablename__ = "notifications"
     
