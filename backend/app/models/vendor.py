@@ -19,9 +19,9 @@ class Vendor(SQLModel, table=True):
     id: UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True, nullable=False)
     user_id: UUID = Field(foreign_key="users.id", nullable=False)
 
-    phone: str = Field(index=True)
-    city: str = Field(index=True)
-    address: str = Field(index=True)
+    phone: Optional[str] = Field(index=True)
+    city: Optional[str] = Field(index=True)
+    address: Optional[str] = Field(index=True)
     
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
