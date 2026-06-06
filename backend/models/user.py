@@ -11,6 +11,9 @@ if TYPE_CHECKING:
     from .vendor import Vendor
     from .reviews import Review
     from .booking import Booking
+    from .notification import Notification
+    from .payment import Payment
+
 
 class UserRole(str, enum.Enum):
     client = "client"

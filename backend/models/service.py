@@ -13,6 +13,7 @@ import enum
 if TYPE_CHECKING:
     from .vendor import Vendor
     from .booking import Booking
+    from .reviews import Review
 
 
 
