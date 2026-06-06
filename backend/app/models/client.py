@@ -5,18 +5,16 @@ import uuid
 from uuid import UUID
 from app.models import User
 
+import uuid
+from uuid import UUID
+from datetime import datetime
+from typing import Optional
+from sqlmodel import SQLModel, Field, Relationship
+
 class Client(SQLModel, table=True):
     __tablename__ = "clients"
     
-    # المعرف الأساسي UUID إجباري
-    id: UUID = Field(
-        default_factory=uuid.uuid4, 
-        primary_key=True, 
-        index=True, 
-        nullable=False
-    )
-    
-    # الربط بجدول المستخدمين عبر الـ UUID الإجباري
+    id: UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True, nullable=False)
     user_id: UUID = Field(foreign_key="users.id", nullable=False)
     
     phone: Optional[str] = Field(default=None, index=True)
@@ -26,5 +24,5 @@ class Client(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
-    # العلاقات
-    user: Optional["User"] = Relationship(back_populates="user")
+    # تم التصحيح: back_populates يشير إلى الحقل المتواجد في User
+    user: Optional["User"] = Relationship(back_populates="client_profile")

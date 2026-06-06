@@ -9,33 +9,30 @@ from uuid import UUID
 from app.models.user import User
 from app.models.service import Service
 
-class Review(SQLModel,table=True):
-    __tablename__="reviews"
+import uuid
+from uuid import UUID
+from datetime import datetime
+from typing import Optional
+from sqlmodel import SQLModel, Field, Relationship, CheckConstraint
 
-    id: UUID = Field(
-        default_factory=uuid.uuid4, 
-        primary_key=True, 
-        index=True, 
-        nullable=False
-    )
+class Review(SQLModel, table=True):
+    __tablename__ = "reviews"
 
-    service_id: UUID = Field(foreign_key="services.id")
-    user_id: UUID = Field(foreign_key="users.id")
+    id: UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True, nullable=False)
+    service_id: UUID = Field(foreign_key="services.id", nullable=False)
+    user_id: UUID = Field(foreign_key="users.id", nullable=False)
 
-    rating:Optional[int]=Field()
+    rating: int = Field(nullable=False) # التقييم إجباري من 1 لـ 5
 
-    created_at: datetime = Field(default_factory=datetime.datetime.utcnow)  
-    updated_at:datetime=Field(default_factory=datetime.datetime.utcnow)  
+    created_at: datetime = Field(default_factory=datetime.utcnow)  
+    updated_at: datetime = Field(default_factory=datetime.utcnow)  
 
-    user: Optional["User"] = Relationship(back_populates="user")
-    service: Optional["Service"] = Relationship(back_populates="service")
-
+    user: Optional["User"] = Relationship(back_populates="reviews")
+    service: Optional["Service"] = Relationship(back_populates="reviews")
 
     __table_args__ = (
         CheckConstraint('rating >= 1 AND rating <= 5', name='check_rating_range'),
     )
-
-
 
 
     

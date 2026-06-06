@@ -20,33 +20,33 @@ class ServiceStatus(enum.Enum): # غيرت الاسم لتجنب التكرار 
     active = "active"
     inactive = "inactive"
 
+import uuid
+from uuid import UUID
+from datetime import datetime
+from typing import Optional, List
+from sqlmodel import SQLModel, Field, Relationship
+import enum
+
+class ServiceStatus(str, enum.Enum):
+    active = "active"
+    inactive = "inactive"
+
 class Service(SQLModel, table=True):
     __tablename__ = "services"
-    id: UUID = Field(  default_factory=uuid.uuid4,
-            primary_key=True,
-            index=True,
-            nullable=False,
-            unique=True)
     
-    vendor_id: UUID = Field(foreign_key="vendors.id")
-    user_id: UUID = Field(foreign_key="users.id")
-    review_id: UUID = Field(foreign_key="reviews.id")
-    booking_id: UUID = Field(foreign_key="bookings.id")
-
-
+    id: UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True, nullable=False, unique=True)
+    vendor_id: UUID = Field(foreign_key="vendors.id", nullable=False)
+    
     name: str = Field(index=True)
-    description: str = Field(nullable=True)
+    description: Optional[str] = Field(default=None)
     price: float = Field(default=0.0)
     image: str = Field(default="default_service.png")
-    status: ServiceStatus = Field(default=ServiceStatus.active,nullable=False)
-    created_at: datetime = Field(default_factory=datetime.datetime.utcnow)  
-    updated_at:datetime=Field(default_factory=datetime.datetime.utcnow)  
+    status: ServiceStatus = Field(default=ServiceStatus.active, nullable=False)
+    
+    created_at: datetime = Field(default_factory=datetime.utcnow)  
+    updated_at: datetime = Field(default_factory=datetime.utcnow)   
 
-     
-    # العلاقات
-    vendor: Optional["Vendor"] = Relationship(back_populates="vendor")
-    user: Optional["Client"] = Relationship(back_populates="user")
-    review: List["Review"] = Relationship(back_populates="review")
-    booking: List["Booking"] = Relationship(back_populates="booking")
-    
-    
+    # العلاقات العكسية الصحيحة
+    vendor: Optional["Vendor"] = Relationship(back_populates="services")
+    bookings: List["Booking"] = Relationship(back_populates="service")
+    reviews: List["Review"] = Relationship(back_populates="service")

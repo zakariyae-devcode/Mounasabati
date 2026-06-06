@@ -18,16 +18,21 @@ class UserRole(str, enum.Enum):
 
 
 
-class User(SQLModel,table=True):
+import uuid
+from uuid import UUID
+from datetime import datetime
+from typing import Optional, List
+from sqlmodel import SQLModel, Field, Relationship
+import enum
+
+class UserRole(str, enum.Enum):
+    client = "client"
+    vendor = "vendor"
+
+class User(SQLModel, table=True):
     __tablename__ = "users"
-    id:UUID=Field(
-            default_factory=uuid.uuid4,
-            primary_key=True,
-            index=True,
-            nullable=False,
-            unique=True
-        )
     
+    id: UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True, nullable=False, unique=True)
     username: str = Field(unique=True, index=True, nullable=False)
     email: str = Field(unique=True, index=True, nullable=False)
     password: str = Field(nullable=False)
@@ -41,9 +46,9 @@ class User(SQLModel,table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
-
-    client_profile:Optional["Client"] =Relationship(back_populates="client_profile")
-    vendor_profile:Optional["Vendor"] =Relationship(back_populates="vendor_profile")
-    review: List["Review"] = Relationship(back_populates="review")
-    booking: List["Booking"] = Relationship(back_populates="booking") 
+    # تم تصحيح back_populates ليرتبط بـ اسم الحقل الفعلي في الجداول الأخرى
+    client_profile: Optional["Client"] = Relationship(back_populates="user")
+    vendor_profile: Optional["Vendor"] = Relationship(back_populates="user")
+    reviews: List["Review"] = Relationship(back_populates="user")
+    bookings: List["Booking"] = Relationship(back_populates="user") 
     notifications: List["Notification"] = Relationship(back_populates="user")
