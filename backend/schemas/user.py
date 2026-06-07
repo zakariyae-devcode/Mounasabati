@@ -1,4 +1,4 @@
-from pydantic import BaseModel ,EmailStr,Field
+from pydantic import BaseModel ,EmailStr,Field,model_validator
 from typing import Optional
 from uuid import UUID
 class UserCreate(BaseModel):
@@ -39,3 +39,26 @@ class UserLgoin(BaseModel):
    Username:str=Field(...,min_length=4,max_length=16)
    CIN:str=Field(...,pattern=r"^[A-Z,a-z]{1,2}\d{5,7}$")
    Password:str=Field(...,min_length=8,max_length=16)
+
+
+class ChangePassword(BaseModel):
+    old_password: str = Field(..., min_length=8, max_length=100)
+    new_password: str = Field(..., min_length=8, max_length=100)
+    confirm_password: str = Field(..., min_length=8, max_length=100)
+
+
+    @model_validator(mode="after")
+    def validator_password_match(self):
+        if self.new_password!=self.confirm_password:
+            raise ValueError("كلمة المرور غير متطابقة")
+        return self
+
+
+
+
+class ForgotPassword(BaseModel):
+    email: EmailStr
+
+
+class ResetPassword(BaseModel):
+    password: str = Field(..., min_length=8, max_length=100)

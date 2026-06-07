@@ -1,10 +1,10 @@
-from fastapi import APIRouter,Depends,HTTPException,status
+from fastapi import APIRouter,Depends,HTTPException,status,Response
 from sqlmodel import Session,select
 from core.database import get_session
 from auth.security import hash_password,verify_password,create_access_token
-from schemas.user import UserCreate,UserOut,UserLogin,UserUpdate
+from schemas.user import UserCreate,UserOut,UserLgoin,UserUpdate,ChangePassword
 from models.user import User
-from models.client import Client
+
 
 router=APIRouter(prefix="auth/",tags=["Authentication"])
 
@@ -60,7 +60,7 @@ def delete_user(CIN:str,session:Session=Depends(get_session)):
     
 
 @router.post("/login")
-def login(user_data:UserLogin,session:Session=Depends(get_session)):
+def login(user_data:UserLgoin,session:Session=Depends(get_session)):
     user=session.exect(select(User).where(User.username==user_data.username)|(User.CIN==user_data.CIN)).first()
     verify_pwd=verify_password(user_data.password,user.password)
 
@@ -71,6 +71,18 @@ def login(user_data:UserLogin,session:Session=Depends(get_session)):
     return {"access_token":access_token,"token_type":"bearer"}
 
 
+
+@router.post("/logout")
+def logout(response:Response):
+    response.delete_cookie(key="access_token")
+
+
+@router.patch("/change-passowrd/")
+def change_password(user_data:ChangePassword,session:Session=Depends(get_session)):
+    
+   
+        pass
+    
 
 
 
