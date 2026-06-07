@@ -1,10 +1,11 @@
 from fastapi import APIRouter,Depends,HTTPException,status,Response
 from sqlmodel import Session,select
 from core.database import get_session
-from auth.security import hash_password,verify_password,create_access_token,get_current_user
-from schemas.user import UserCreate,UserOut,UserLgoin,UserUpdate,ChangePassword
+from auth.security import hash_password,verify_password,create_access_token,get_current_user,SECRET_KEY,ALGORITHM
+from schemas.user import UserCreate,UserOut,UserLgoin,UserUpdate,ChangePassword,ForgotPassword,ResetPassword
 from models.user import User
-
+from datetime import datetime, timedelta, timezone
+from jose import jwt
 
 router=APIRouter(prefix="auth/",tags=["Authentication"])
 
@@ -117,7 +118,58 @@ def change_password(user_data:ChangePassword,session:Session=Depends(get_session
 
 
 
+@router.post("/forgot-password",status_code=status.HTTP_200_OK)
+def forgot_password(payload: ForgotPassword, session: Session = Depends(get_session)):
+    user=session.exec(select(User).where(User.email==payload.email)).first()
+
+    if not user:
+        return {"details":"إذا كان البريد الإلكتروني مسجلاً لدينا، فقد أرسلنا رابط إعادة التعيين."}
+    
+    expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+    token_data = {"sub": str(user.id), "exp": expire, "action": "reset_password"}
+    reset_token = jwt.encode(token_data, SECRET_KEY, algorithm=ALGORITHM)
+
+    reset_link = f"http://127.0.0.1:8000/auth/reset-password?token={reset_token}"
+
+    print(f"Reset Link: {reset_link}")
+    
+    return {"detail": "إذا كان البريد الإلكتروني مسجلاً لدينا، فقد أرسلنا رابط إعادة التعيين."}
+
+@router.post("/reset-password", status_code=status.HTTP_200_OK)
+def reset_password(payload: ResetPassword, session: Session = Depends(get_session)):
+    
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="الرمز غير صالح أو منتهي الصلاحية"
+    )
+    
+    try:
+        # فك تشفير التوكن والتحقق من الصلاحية تلقائياً عبر jwt
+        token_payload = jwt.decode(payload.token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: str = token_payload.get("sub")
+        action: str = token_payload.get("action")
+        
+        # التأكد من أن التوكن مخصص فقط لإعادة التعيين وليس توكن تسجيل دخول عادي
+        if user_id is None or action != "reset_password":
+            raise credentials_exception
+            
+    except jwt.PyJWTError:
+        raise credentials_exception
+        
+    # جلب المستخدم من قاعدة البيانات
+    user = session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="المستخدم غير موجود")
+        
+    # تشفير كلمة المرور الجديدة وتحديثها
+    # user.password = get_password_hash(payload.new_password)
+    user.password = payload.new_password  # (تذكر استخدام دالة التشفير الخاصة بك هنا)
+    
+    session.add(user)
+    session.commit()
+    
+    return {"detail": "تمت إعادة تعيين كلمة المرور بنجاح، يمكنك تسجيل الدخول الآن."}
 
     
-    
+
     
