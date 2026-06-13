@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     #------------------APP-------------#
-    'Accounts.apps.AccountsConfig'
+    'Accounts',
 ]
 
 SIMPLE_JWT = {
@@ -87,7 +87,7 @@ REST_FRAMEWORK = {
     )
 }
 
-AUTH_USER_MODEL='Accounts.User'
+AUTH_USER_MODEL='Accounts.Users'
 
 
 MIDDLEWARE = [
@@ -172,19 +172,5 @@ MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 
 
-CORS_ALLOWED_ORIGINS =True
+CORS_ALLOWED_ORIGIN =True
 
-CORS_ALLOW_METHODS = (
-    "DELETE",
-    "GET",
-    "OPTIONS",
-    "PATCH",
-    "POST",
-    "PUT",
-)
-
-CORS_ALLOW_HEADERS = (
-    "accept",
-    "authorization",
-    "content-type",
-)
