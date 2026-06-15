@@ -10,7 +10,7 @@ from django.core.mail import send_mail
 
 from .serializers import (
     UserRegisterSerializer, UserUpdateSerializer, UserSerializer,
-    ChangePassword, EmailRest, ForgotPassword, Logout
+    ChangePassword, EmailRest, ForgotPassword, Logout,UpdateRole
 )
 
 def hello(request):
@@ -58,8 +58,7 @@ class ChangePasswordView(APIView):
 
 
 class EmailResetView(APIView):
-   permission_classes = []
-   
+  
    def post(self, request):
       serializer = EmailRest(data=request.data)
       if serializer.is_valid():
@@ -110,6 +109,7 @@ class LogoutView(APIView):
          return Response({"message": "user logged out successfully"}, status=status.HTTP_200_OK)
       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
    
+#-------------------------------------------------------------#
 
 class AdminDeleteUserView(APIView):
     permission_classes = [IsAdminUser]
@@ -118,6 +118,31 @@ class AdminDeleteUserView(APIView):
         try:
             user_to_delete = Users.objects.get(cin=user_cin)
             user_to_delete.delete()
-            return Response({"message": "تم حذف المستخدم بواسطة المسؤول بنجاح."}, status=status.HTTP_200_OK)
+            return Response({"message": "تم حذف المستخدم بواسطة المسؤول بنجاح."}, status=status.HTTP_204_NO_CONTENT)
         except Users.DoesNotExist:
             return Response({"error": "المستخدم غير موجود بالفعل."}, status=status.HTTP_404_NOT_FOUND)
+
+class AdminUpdateUserRoleView(APIView):
+
+   permission_classes = [IsAdminUser]
+
+   def patch(self, request, user_cin):
+        try:
+            user = Users.objects.get(cin=user_cin)
+            serializer = UpdateRole(user, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message": "تم تحديث دور المستخدم بنجاح."}, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Users.DoesNotExist:
+            return Response({"error": "المستخدم غير موجود."}, status=status.HTTP_404_NOT_FOUND)
+        
+class UserView(APIView):
+   permission_classes=[IsAdminUser]
+
+   def get(self,request):
+      users=Users.objects.all()
+      serializer=UserSerializer(users,many=True)
+      return Response(serializer.data,status=status.HTTP_200_OK)
+   
+

@@ -100,3 +100,13 @@ class Logout(serializers.Serializer):
         except Exception as e:
             raise serializers.ValidationError({"detail": "التوكن غير صالح أو منتهي الصلاحية."})
         return self.token
+    
+class UpdateRole(serializers.Serializer):
+    role = serializers.ChoiceField(choices=Users.UserRole.choices)
+
+   
+
+    def update(self, instance, validated_data):
+        instance.role = validated_data.get('role', instance.role)
+        instance.save()
+        return instance
