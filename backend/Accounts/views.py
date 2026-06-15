@@ -13,8 +13,6 @@ from .serializers import (
     ChangePassword, EmailRest, ForgotPassword, Logout,UpdateRole
 )
 
-def hello(request):
-   return JsonResponse({"message": "hello world"})
 
 
 class RegisterView(APIView):
