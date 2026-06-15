@@ -13,6 +13,7 @@ from .serializers import (
     ChangePassword, EmailRest, ForgotPassword, Logout,UpdateRole
 )
 
+#---Authenticatione-----------------------#
 
 
 class RegisterView(APIView):
@@ -107,7 +108,7 @@ class LogoutView(APIView):
          return Response({"message": "user logged out successfully"}, status=status.HTTP_200_OK)
       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
    
-#-------------------------------------------------------------#
+#-----------------------Admin--------------------------------------#
 
 class AdminDeleteUserView(APIView):
     permission_classes = [IsAdminUser]
