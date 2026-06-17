@@ -13,12 +13,13 @@ class CreateProfileSerializer(serializers.ModelSerializer):
             "country":{"required":False,"allow_blank":False},
             "address":{"required":False,"allow_blank":False},
         }
-
-    def create(self,validate_data):
+        
+    @transaction.atomic
+    def create(self,validated_data):
 
         user = self.context['request'].user
         with transaction.atomic():
-            profile=Profiles.objects.create(user=user,**validate_data)
+            profile=Profiles.objects.create(user=user,**validated_data)
             return profile
         
 class UpdateProfileSerializer(serializers.ModelSerializer):
