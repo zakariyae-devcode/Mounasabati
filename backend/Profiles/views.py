@@ -22,7 +22,7 @@ class CreateProfileView(APIView):
     permission_classes = [IsAuthenticated]
     def post(sefl,request):
         try:
-            serializer=CreateProfileSerializer(data=request.data)
+            serializer=CreateProfileSerializer(data=request.data, context={'request': request})
             if serializer.is_valid():
                 serializer.save()
                 return Response({"message": "profile created successfully"}, status=status.HTTP_201_CREATED)

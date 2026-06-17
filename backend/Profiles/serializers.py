@@ -1,12 +1,8 @@
 from rest_framework import serializers
 from .models import Profiles
-
+from django.db import transaction
 
 class CreateProfileSerializer(serializers.ModelSerializer):
-
-    username = serializers.CharField(source='user.username', read_only=True)
-    
-
     class Meta:
         model=Profiles
         fields=["phone","city","country","address"]
@@ -18,17 +14,14 @@ class CreateProfileSerializer(serializers.ModelSerializer):
             "address":{"required":False,"allow_blank":False},
         }
 
-        def create(self,validate_data):
+    def create(self,validate_data):
 
-            user=self.context.get('request').user if 'request' in self.context else None
+        user = self.context['request'].user
+        with transaction.atomic():
             profile=Profiles.objects.create(user=user,**validate_data)
-
             return profile
         
 class UpdateProfileSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source='user.username', read_only=True)
-    
-
     class Meta:
         model=Profiles
         fields=["phone","city","country","address"]
