@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     #------------------APP-------------#
     'Accounts',
+    'Profiles',
 ]
 
 SIMPLE_JWT = {
