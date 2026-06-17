@@ -142,6 +142,29 @@ class ForgotPasswordView(APIView):
                 logger.error(f"[SECURITY] Database error during password reset: {str(e)}")
                 return Response({"error": "حدث خطأ داخلي أثناء معالجة الطلب."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    class UserSelfDeleteView(APIView):
+        permission_classes = [IsAuthenticated]
+        
+        def delete(self,request):
+            try:
+                user = request.user
+                password = request.data.get("password")
+                
+                # تأكيد الهوية أمنياً قبل الحذف
+                if not password or not user.check_password(password):
+                    return Response({"error": "كلمة المرور غير صحيحة، لا يمكن إتمام عملية الحذف."}, status=status.HTTP_400_BAD_REQUEST)
+                
+                # إلغاء تفعيل الحساب بأمان (Soft Delete)
+                user.is_active = False
+                user.save()
+                return Response({"message": "تم تعطيل حسابك بنجاح ونأسف لمغادرتك."}, status=status.HTTP_200_OK)
+            
+            except DatabaseError as e:
+                logger.error(f"[SECURITY] Database error during user delete: {str(e)}")
+                return Response({"error": "تعذر حدف البيانات بسبب خطأ داخلي."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 class LogoutView(APIView):
