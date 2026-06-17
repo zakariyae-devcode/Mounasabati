@@ -18,6 +18,8 @@ class Users(AbstractUser):
     cin=models.CharField(max_length=50,unique=True,validators=[cin_validators],verbose_name="رقم البطاقة الوطنية")
     image = models.ImageField(upload_to='profile_pics/',null=True,blank=True)
 
+    deletion_requested_at = models.DateTimeField(null=True, blank=True)
+
     create_at=models.DateTimeField(auto_now_add=True)
     update_at=models.DateTimeField(auto_now=True)
 

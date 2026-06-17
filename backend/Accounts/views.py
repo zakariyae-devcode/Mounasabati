@@ -1,4 +1,11 @@
-import os
+from django.utils import timezone
+from datetime import timedelta
+
+
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import ValidationError
+
 import logging
 from django.core.mail import send_mail
 from django.conf import settings
@@ -34,6 +41,54 @@ class RegisterView(APIView):
         except DatabaseError as e:
             logger.error(f"[SECURITY] Database error during registration: {str(e)}")
             return Response({"error": "حدث خطأ غير متوقع أثناء معالجة الطلب."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+
+class CustomLoginView(ObtainAuthToken):
+    """
+    امتداد لنظام تسجيل الدخول المدمج في DRF للتحقق من التوكن، 
+    معالجة مهلة الـ 30 يوماً، وفرز الأدوار في الخلفية.
+    """
+    
+    def post(self, request, *args, **kwargs):
+        # 1. استدعاء السيريالايزر الافتراضي لـ DRF للتحقق من اسم المستخدم وكلمة المرور
+        serializer = self.get_serializer(data=request.data)
+        
+        try:
+            serializer.is_valid(raise_exception=True)
+        except ValidationError:
+            return Response({"error": "Invalid credentials."}, status=status.HTTP_400_BAD_REQUEST)
+            
+        user = serializer.validated_data['user']
+
+        # 2. فحص مهلة الـ 30 يوماً للحسابات المعطلة ذاتياً
+        if not user.is_active and user.deletion_requested_at:
+            expiration_deadline = user.deletion_requested_at + timedelta(days=30)
+            
+            if timezone.now() > expiration_deadline:
+                user.delete()  # الحذف النهائي
+                return Response({"error": "Account permanently deleted."}, status=status.HTTP_404_NOT_FOUND)
+            else:
+                # إلغاء الحذف وإعادة التفعيل
+                user.is_active = True
+                user.deletion_requested_at = None
+                user.save()
+
+        # 3. التحقق من الحسابات المعطلة إدارياً
+        if not user.is_active:
+            return Response({"error": "Account is disabled."}, status=status.HTTP_403_FORBIDDEN)
+
+        # 4. جلب أو إنشاء التوكن عبر نظام DRF الافتراضي
+        token, created = Token.objects.get_or_create(user=user)
+
+        # 5. فرز الأدوار وإرجاع الاستجابة بناءً على صلاحية المستخدم
+        if user.role in ["admin", "vendor", "customer"]:
+            return Response({
+                "token": token.key,
+                "role": user.role
+            }, status=status.HTTP_200_OK)
+        
+        return Response({"error": "Unauthorized role."}, status=status.HTTP_403_FORBIDDEN)
 
 
 class UserDetailView(APIView):
@@ -63,6 +118,27 @@ class UserUpdateView(APIView):
         except DatabaseError as e:
             logger.error(f"[SECURITY] Database error during user update: {str(e)}")
             return Response({"error": "تعذر تحديث البيانات بسبب خطأ داخلي."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class UserSelfDeleteView(APIView):
+    """المستخدم يطلب حذف حسابه (يُقفل فوراً وتبدأ مهلة الـ 30 يوماً)"""
+    permission_classes = [IsAuthenticated]
+    
+    def delete(self, request):
+        user = request.user
+        password = request.data.get("password")
+        
+        # التأكد من كلمة المرور أمنياً قبل القفل
+        if not password or not user.check_password(password):
+            return Response({"error": "كلمة المرور غير صحيحة، تعذر بدء عملية الحذف."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # قفل الحساب وبدء فترة السماح (30 يوماً)
+        user.is_active = False
+        user.deletion_requested_at = timezone.now()
+        user.save()
+        
+        return Response({
+            "message": "تم قفل حسابك بنجاح. لديك مهلة 30 يوماً لاسترجاعه عبر تسجيل الدخول، بعد ذلك سيتم حذفه نهائياً ولن تتمكن من استعادته."
+        }, status=status.HTTP_200_OK)
 
 
 class ChangePasswordView(APIView): 
@@ -143,29 +219,6 @@ class ForgotPasswordView(APIView):
                 return Response({"error": "حدث خطأ داخلي أثناء معالجة الطلب."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
-    class UserSelfDeleteView(APIView):
-        permission_classes = [IsAuthenticated]
-        
-        def delete(self,request):
-            try:
-                user = request.user
-                password = request.data.get("password")
-                
-                # تأكيد الهوية أمنياً قبل الحذف
-                if not password or not user.check_password(password):
-                    return Response({"error": "كلمة المرور غير صحيحة، لا يمكن إتمام عملية الحذف."}, status=status.HTTP_400_BAD_REQUEST)
-                
-                # إلغاء تفعيل الحساب بأمان (Soft Delete)
-                user.is_active = False
-                user.save()
-                return Response({"message": "تم تعطيل حسابك بنجاح ونأسف لمغادرتك."}, status=status.HTTP_200_OK)
-            
-            except DatabaseError as e:
-                logger.error(f"[SECURITY] Database error during user delete: {str(e)}")
-                return Response({"error": "تعذر حدف البيانات بسبب خطأ داخلي."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
 
 class LogoutView(APIView):
     """تسجيل الخروج الآمن"""
