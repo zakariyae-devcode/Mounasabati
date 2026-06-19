@@ -31,6 +31,7 @@ class Users(AbstractUser):
         CLIENT="client","Client"
         VENDOR="vendor","Vendor"
         ADMIN="admin","Admin"
+
     role=models.CharField(max_length=50,choices=UserRole.choices,default=UserRole.CLIENT)
     cin=models.CharField(max_length=50,unique=True,validators=[cin_validators],verbose_name="رقم البطاقة الوطنية")
     image = models.ImageField(upload_to='profile_pics/',null=True,blank=True)
@@ -57,7 +58,5 @@ class Users(AbstractUser):
         return f"{self.username} ({self.get_role_display()})"
 
 
-    def __str__(self):
-        return self.username
-
+   
 
