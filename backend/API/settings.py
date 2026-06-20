@@ -43,6 +43,12 @@ INSTALLED_APPS = [
     #------------------APP-------------#
     'Accounts',
     'Profiles',
+    'Services',
+    'Bookings',
+    'Reviews',
+    'Conversations',
+    'Notifications',
+    'Payments'
 ]
 
 SIMPLE_JWT = {

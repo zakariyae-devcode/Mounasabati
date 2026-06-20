@@ -1,5 +1,5 @@
 from django.db import models
-
+from Bookings.models import Booking
 
 class Payment(models.Model):
     class PaymentStatus(models.TextChoices):
@@ -15,7 +15,7 @@ class Payment(models.Model):
 
     # ربط عملية الدفع بحجز واحد محدد
     booking = models.OneToOneField(
-        'Booking', 
+        Booking, 
         on_delete=models.CASCADE, 
         related_name='payment', 
         verbose_name="الحجز المرتبط"
