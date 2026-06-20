@@ -38,4 +38,4 @@ class Notification(models.Model):
         ordering = ['-created_at'] # عرض التنبيهات الأحدث أولاً دائماً
 
     def __str__(self):
-        return f"تنبيه لـ {self.user.username} - {self.title}"
+        return f"{self.user.username} - {self.title}"

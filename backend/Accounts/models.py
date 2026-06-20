@@ -21,8 +21,9 @@ class UsersManager(BaseUserManager):
     def create_superuser(self, username, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('role', 'admin')
+        extra_fields.setdefault('role', 'superadmin')
         return self.create_user(username, email, password, **extra_fields)
+    
 class Users(AbstractUser):
     cin_validators=RegexValidator(
         regex=r'^[A-Z]{1,2}[0-9]{6,7}$'
@@ -31,10 +32,11 @@ class Users(AbstractUser):
         CLIENT="client","Client"
         VENDOR="vendor","Vendor"
         ADMIN="admin","Admin"
+        SUPREADMIN="superadmin","SuperAdmin"
 
     role=models.CharField(max_length=50,choices=UserRole.choices,default=UserRole.CLIENT)
     cin=models.CharField(max_length=50,unique=True,validators=[cin_validators],verbose_name="رقم البطاقة الوطنية")
-    image = models.ImageField(upload_to='profile_pics/',null=True,blank=True)
+    
 
     deletion_requested_at = models.DateTimeField(null=True, blank=True)
 

@@ -23,7 +23,7 @@ class Service(models.Model):
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="services")
     
     title = models.CharField(max_length=200, verbose_name="عنوان الخدمة")
-    description = models.TextField(verbose_name="وصف تفصيلي للخدمة")
+    description = models.TextField(verbose_name="وصف تفصيلي للخدمة",blank=True,null=True)
     price = models.DecimalField(max_length=10, decimal_places=2, max_digits=10, verbose_name="السعر الافتراضي (درهم)")
     city = models.CharField(max_length=50, verbose_name="المدينة")
     address = models.CharField(max_length=255, verbose_name="العنوان المباشر")
