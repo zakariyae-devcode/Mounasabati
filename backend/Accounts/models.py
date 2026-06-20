@@ -35,7 +35,7 @@ class Users(AbstractUser):
         SUPREADMIN="superadmin","SuperAdmin"
 
     role=models.CharField(max_length=50,choices=UserRole.choices,default=UserRole.CLIENT)
-    cin=models.CharField(max_length=50,unique=True,validators=[cin_validators],verbose_name="رقم البطاقة الوطنية")
+    cin=models.CharField(max_length=50,unique=True,validators=[cin_validators],verbose_name="CIN")
     
 
     deletion_requested_at = models.DateTimeField(null=True, blank=True)
