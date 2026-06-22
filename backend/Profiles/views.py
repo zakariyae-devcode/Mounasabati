@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Profiles
-from .serializers import CreateProfileSerializer, UpdateProfileSerializer
+from .serializers import CreateProfileSerializer, UpdateProfileSerializer,ProfileSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -51,3 +51,15 @@ class UpdateProfileView(APIView):  # 👈 تم تصحيح الاسم الإمل�
         except DatabaseError as e:
             logger.error(f"[SECURITY] Database error during profile update: {str(e)}")
             return Response({"error": "تعذر تحديث البيانات بسبب خطأ داخلي."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class ProfileDetailView(APIView):
+    """جلب بيانات المستخدم الحالي الآمن"""
+    permission_classes = [IsAuthenticated]
+   
+    def get(self, request):
+        try:
+            serializer = ProfileSerializer(request.user)
+            return Response({"DetailUser": serializer.data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"[SECURITY] Error retrieving user details: {str(e)}")
+            return Response({"error": "حدث خطأ داخلي في الخادم."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

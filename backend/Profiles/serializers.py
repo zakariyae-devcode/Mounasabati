@@ -33,3 +33,10 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
         instance.save()
         return instance
+    
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Profiles
+        fields=["phone","city","country","address"]
+
