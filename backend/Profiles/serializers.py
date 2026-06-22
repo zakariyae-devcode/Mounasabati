@@ -17,6 +17,7 @@ class CreateProfileSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self,validated_data):
 
+
         user = self.context['request'].user
         with transaction.atomic():
             profile=Profiles.objects.create(user=user,**validated_data)
