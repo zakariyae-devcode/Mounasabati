@@ -24,7 +24,7 @@ def service(request):
 
     return {"message":"service"}
 
-
+#------------createCategory-----------#
 class CreateCategory(APIView):
     permission_classes=[IsAdminUser]
     def post(self,request):
@@ -38,3 +38,18 @@ class CreateCategory(APIView):
             logger.error(f"[SECURITY] Database error during registration: {str(e)}")
             return Response({"error": "An unexpected error occurred while processing the request"}, 
             status=status. HTTP_500_INTERNAL_SERVER_ERROR)
+#-------------createService-----------#
+
+class CreateService(APIView):
+    permission_classes=[IsVendorUser]
+
+    def post(self,request):
+        try:
+            serilizer=CreateServiceSerializer(data=request.data)
+            if serilizer.is_valid():
+                serilizer.save()
+                return Response({"message":"category created successfully"},status=status.HTTP_201_CREATED)
+        except DatabaseError as e:
+            logger.error(f"[SECURITY] Database error during registration: {str(e)}")
+            return Response({"error": "An unexpected error occurred while processing the request"}, 
+            status=status. HTTP_500_INTERNAL_SERVER_ERROR) 

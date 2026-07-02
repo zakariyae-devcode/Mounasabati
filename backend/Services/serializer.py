@@ -17,7 +17,7 @@ class CreateCategorySerializer(serializers.ModelSerializer):
 
 class CreateServiceSerializer(serializers.ModelSerializer):
     # نستخدم PrimaryKeyRelatedField لربط الخدمة بمعرف التصنيف (ID) القادم من العميل
-    category = serializers.SlugRelatedField(slug_field='slug',queryset=Category.objects.all())
+    category = serializers.SlugRelatedField(fields="name",queryset=Category.objects.all())
 
     class Meta:
         model = Service

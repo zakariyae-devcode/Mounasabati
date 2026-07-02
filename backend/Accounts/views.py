@@ -40,7 +40,8 @@ class RegisterView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except DatabaseError as e:
             logger.error(f"[SECURITY] Database error during registration: {str(e)}")
-            return Response({"error": "حدث خطأ غير متوقع أثناء معالجة الطلب."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"error": "An unexpected error occurred while processing the request"}, 
+            status=status. HTTP_500_INTERNAL_SERVER_ERROR)
         
 
 
