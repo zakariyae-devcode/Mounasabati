@@ -4,6 +4,9 @@ from django.utils.text import slugify
 
 from Accounts.models import Users
 
+
+import uuid
+
 class Category(models.Model):
     name=models.CharField(max_length=255,unique=True)
     slug=models.SlugField(max_length=255,unique=True,allow_unicode=True)
@@ -11,7 +14,9 @@ class Category(models.Model):
 
     def save(self,*args,**kwargs):
         if not self.slug:
-            self.slug=slugify(self.name,allow_unicode=True)
+            base_slug=slugify(self.name,allow_unicode=True)
+            unique_id=uuid.uuid4().hex[:8]
+            self.slug=f"{base_slug}-{unique_id}"
         return super().save(*args,**kwargs)
     
 
