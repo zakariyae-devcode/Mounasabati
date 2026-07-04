@@ -3,7 +3,7 @@ from .models import Service
 from Category.models import Categorys
 from Accounts.models import Users
 
-from Category.serailizer import CreateCategorySerializer
+from Category.serailizer import CategorySerializer
 class CreateServiceSerializer(serializers.ModelSerializer):
 
     
@@ -51,7 +51,7 @@ class UpdateServiceSerializer(serializers.ModelSerializer):
 
 class ServiceSerializer(serializers.ModelSerializer):
     # سيريالايزر مخصص لعرض البيانات بالكامل (Read-Only) شامل تفاصيل التصنيف
-    category = CreateCategorySerializer(read_only=True)
+    category = CategorySerializer(read_only=True)
 
     class Meta:
         model = Service

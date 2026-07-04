@@ -4,13 +4,14 @@ from django.db import DatabaseError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+
+from Category.models import Categorys
 
 from .filters import ServiceFilter
 
 import logging
 
-from utils.permission import IsVendorUser,IsAdminUser
+from utils.permission import IsAdminUser,IsClientUser,IsVendorUser
 from .models import Service
 
 
@@ -80,23 +81,8 @@ class DeleteServiceView(APIView):
             logger.error(f"[SECURITY] Database error during service deletion: {str(e)}")
             return Response({"error": "فشلت العملية بسبب قيود حماية قاعدة البيانات."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    
-class ServiceDetailsView(APIView):
-    permission_classes=[IsVendorUser]
-    
-    def get(self,request,category_slug):
-        try:
-            service = get_object_or_404(Service, category__slug=category_slug, vendor=request.user)
-            
-            serializer = ServiceSerializer(service)
-            return Response({"ServiceDetails": serializer.data}, status=status.HTTP_200_OK)
-        except Exception as e:
-            logger.error(f"Error retrieving service for category {category_slug}: {str(e)}")
-            return Response({"error": "حدث خطأ داخلي في الخادم."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
 class ServiceView(APIView):
-    permission_classes = [IsAuthenticated]
+   
     
     def get(self, request):
         try:
@@ -125,3 +111,72 @@ class ServiceView(APIView):
                 {"error": "تعذر جلب البيانات المطلوبة حالياً."}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+         
+class ServiceDetailsView(APIView):
+    # حماية الـ View ليكون للزبائن فقط
+    permission_classes = [IsClientUser]
+
+    def get(self, request, category_slug):
+        try:
+            # 1. التأكد أولاً من أن القسم (Category) موجود وصحيح في قاعدة البيانات
+            category = get_object_or_404(Categorys, slug=category_slug)
+            
+            # 2. جلب جميع الخدمات التي تنتمي لهذا القسم (متاحة لكل التجار ليراها الزبون)
+            queryset = Service.objects.filter(category=category)
+            
+            # 3. تمرير القائمة للسيريالايزر وتحويلها إلى JSON مع تفعيل many=True
+            serializer = ServiceSerializer(queryset, many=True)
+            
+            return Response(
+                {"services": serializer.data}, 
+                status=status.HTTP_200_OK
+            )
+            
+        except Exception as e:
+            logger.error(f"Error retrieving services for category {category_slug}: {str(e)}")
+            return Response(
+                {"error": "حدث خطأ داخلي في الخادم."}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+class ServiceVendorView(APIView):
+    # إجبار أن يكون المستخدم تاجر مسجل دخوله
+    permission_classes = [IsVendorUser]
+
+    # نستقبل الـ category_slug من الرابط (URL)
+    def get(self, request, category_slug):
+        try:
+            # 1. التأكد أولاً من أن القسم المرسل موجود في النظام
+            category = get_object_or_404(Categorys, slug=category_slug)
+            
+            # 2. [أمان ومنطق] جلب الخدمات التي تنتمي لهذا القسم + تخص هذا التاجر الحالي فقط
+            queryset = Service.objects.filter(category=category, vendor=request.user)
+            
+            # 3. تمرير القائمة للسيريالايزر (مع many=True لأنها قد تكون مجموعة خدمات)
+            serializer = ServiceSerializer(queryset, many=True)
+            
+            return Response(
+                {"services": serializer.data}, 
+                status=status.HTTP_200_OK
+            )
+            
+        except Exception as e:
+            logger.error(f"Error retrieving services for category {category_slug}: {str(e)}")
+            return Response(
+                {"error": "حدث خطأ داخلي في الخادم."}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class ServiceAdminView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+       
+        
+        queryset = Service.objects.all().order_by('-created_at')
+        
+        serializer =ServiceSerializer(queryset, many=True)
+        
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)

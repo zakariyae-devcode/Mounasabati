@@ -15,7 +15,7 @@ from utils.permission import IsVendorUser,IsAdminUser
 from .models import Categorys
 
 
-from .serailizer import CreateCategorySerializer,UpdateCategorySerializer
+from .serailizer import CreateCategorySerializer,UpdateCategorySerializer,CategorySerializer
 
 
 logger=logging.getLogger(__name__)
@@ -75,3 +75,13 @@ class DeleteCategoryView(APIView):
         except DatabaseError as e:
             logger.error(f"[SECURITY] Database error during category deletion: {str(e)}")
             return Response({"error": "فشلت العملية بسبب قيود حماية قاعدة البيانات."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class CategoryAdminView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self,request):
+        category=Categorys.objects.all().order_by('-create_at')
+        serializer=CategorySerializer(category,many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+

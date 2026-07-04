@@ -22,4 +22,9 @@ class UpdateCategorySerializer(serializers.ModelSerializer):
             "name": {"required": True, "allow_blank": True},  # تصحيح الخطأ الإملائي من allow_bank إلى allow_blank
             "image": {"required": False, "allow_null": True}
         }
-
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categorys
+        fields = '__all__'
+        # يجب أن تكون extra_kwargs داخل كلاس Meta وليس خارجه
+        

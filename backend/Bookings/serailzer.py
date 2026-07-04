@@ -4,6 +4,7 @@ from django.utils import timezone
 
 from .models import Booking
 
+from Services.serializer import ServiceSerializer
 class CreateBookingSerializer(serializers.ModelSerializer):
     
     class Meta:
@@ -44,3 +45,17 @@ class UpdateBookingSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"event_date": "لا يمكن الحجز في تاريخ قديم."})
             
         return attrs
+    
+class UpdateBookingStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model =Booking
+        fields=["status"]
+        extra_kwargs = {
+            "status": {"required": False},
+        }
+
+class BookingSerializer(serializers.ModelSerializer):
+    service = ServiceSerializer(read_only=True)
+    class Meta:
+        model =Booking
+        fields='__all__'
