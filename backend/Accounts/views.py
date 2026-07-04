@@ -118,8 +118,7 @@ class UserUpdateView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except DatabaseError as e:
             logger.error(f"[SECURITY] Database error during user update: {str(e)}")
-            return Response({"error": "تعذر تحديث البيانات بسبب خطأ داخلي."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+            return Response({"error": "unable to update due to an internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 class UserSelfDeleteView(APIView):
     """المستخدم يطلب حذف حسابه (يُقفل فوراً وتبدأ مهلة الـ 30 يوماً)"""
     permission_classes = [IsAuthenticated]
@@ -262,7 +261,7 @@ class AdminDeleteUserView(APIView):
         try:
             user_to_delete = Users.objects.get(cin=user_cin)
             user_to_delete.delete()
-            return Response({"message": "تم حذف المستخدم بواسطة المسؤول بنجاح."}, status=status.HTTP_200_OK)
+            return Response({"message": "تم حذف المستخدم بواسطة المسؤول بنجاح."}, status=status.HTTP_204_NO_CONTENT)
         except Users.DoesNotExist:
             return Response({"error": "المستهدف غير موجود بالنظام."}, status=status.HTTP_404_NOT_FOUND)
         except DatabaseError as e:

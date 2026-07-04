@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Service, Category
-
+from Accounts.models import Users
 class CreateCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -18,6 +18,7 @@ class CreateCategorySerializer(serializers.ModelSerializer):
 class CreateServiceSerializer(serializers.ModelSerializer):
     # نستخدم PrimaryKeyRelatedField لربط الخدمة بمعرف التصنيف (ID) القادم من العميل
     category = serializers.SlugRelatedField(fields="name",queryset=Category.objects.all())
+    vendor= serializers.SlugField(fields="username",queryset=Users.objects.all())
 
     class Meta:
         model = Service
