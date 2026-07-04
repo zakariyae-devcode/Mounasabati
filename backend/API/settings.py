@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'Accounts',
     'Profiles',
     'Services',
+    "Category",
     'Bookings',
     'Reviews',
     'Conversations',

@@ -10,11 +10,11 @@ from .filters import ServiceFilter
 
 import logging
 
-from utils.permission import IsVendorUser
+from utils.permission import IsVendorUser,IsAdminUser
 from .models import Service
 
 
-from .serializer import (CreateCategorySerializer,CreateServiceSerializer,UpdateServiceSerializer,ServiceSerializer)
+from .serializer import (CreateServiceSerializer,UpdateServiceSerializer,ServiceSerializer)
 
 
 logger=logging.getLogger(__name__)
@@ -23,29 +23,6 @@ logger=logging.getLogger(__name__)
 # Create your views here.
 
 
-#------------createCategory-----------#
-class CreateCategoryView(APIView):
-    permission_classes = [IsVendorUser]
-    
-    def post(self, request):
-        try:
-            serializer = CreateCategorySerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(
-                    {"message": "تم إنشاء القسم بنجاح"}, 
-                    status=status.HTTP_201_CREATED
-                )
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            
-        except DatabaseError as e:
-            # تم تعديل نص الخطأ ليناسب عملية إنشاء القسم بدلاً من التسجيل
-            logger.error(f"[SECURITY] Database error during category creation: {str(e)}")
-            # تم إصلاح الفراغ الزائد في استدعاء حالة الخطأ 500
-            return Response(
-                {"error": "حدث خطأ غير متوقع أثناء معالجة الطلب"}, 
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
 #-------------createService-----------#
 
 class CreateServiceView(APIView):
@@ -72,7 +49,7 @@ class CreateServiceView(APIView):
                 {"error": "An unexpected error occurred while processing the request"}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-        
+      
 #-------------updateSerivce--------------#
 
 class UpdateServiceView(APIView):

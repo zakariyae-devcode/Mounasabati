@@ -1,25 +1,14 @@
 from rest_framework import serializers
-from .models import Service, Category
+from .models import Service
+from Category.models import Categorys
 from Accounts.models import Users
-class CreateCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ["name", "image"]
-        # يجب أن تكون extra_kwargs داخل كلاس Meta وليس خارجه
-        extra_kwargs = {
-            "name": {"required": True, "allow_blank": True},  # تصحيح الخطأ الإملائي من allow_bank إلى allow_blank
-            "image": {"required": False, "allow_null": True}
-        }
 
-    def create(self, validated_data):  # تصحيح الاسم من validate_data إلى validated_data
-        return Category.objects.create(**validated_data)
-
-
+from Category.serailizer import CreateCategorySerializer
 class CreateServiceSerializer(serializers.ModelSerializer):
 
     
 
-    category = serializers.SlugRelatedField(slug_field="name", queryset=Category.objects.all())
+    category = serializers.SlugRelatedField(slug_field="name", queryset=Categorys.objects.all())
     
     vendor = serializers.SlugRelatedField(slug_field="username", queryset=Users.objects.all())
 
@@ -27,6 +16,15 @@ class CreateServiceSerializer(serializers.ModelSerializer):
         model = Service
         # ملء الحقول وتضمين الـ category
         fields = ["category", "title", "description", "price", "city", "address"]
+
+        extra_kwargs = {
+            "category": {"required": True,"allow_blank": False},
+            "title": {"required":True,"allow_blank": False},
+            "description": {"required": True,"allow_blank": False},
+            "price": {"required": True,"allow_blank": False},
+            "city": {"required": True,"allow_blank": False},
+            "address": {"required": True,"allow_blank": False},
+        }
 
     def create(self, validated_data):
         # جلب المستخدم الحالي (البائع) من سياق الطلب
