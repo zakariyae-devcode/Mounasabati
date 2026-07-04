@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
+from .filters import ServiceFilter
 
 import logging
 
@@ -118,22 +119,30 @@ class ServiceDetailsView(APIView):
 
 
 class ServiceView(APIView):
-    # استخدام الصلاحية التي حددتها (يجب أن يكون مسجلاً دخوله)
     permission_classes = [IsAuthenticated]
     
     def get(self, request):
         try:
-            # 1. جلب الخدمات مع تحديد الحقول المطلوبة فقط لتحسين الأداء
-            services = Service.objects.all().only("title", "price", "city", "address")
+            # 1. جلب الخدمات الأساسية
+            queryset = Service.objects.all()
             
-            # 2. تحويل البيانات إلى JSON باستخدام السيريلايزر (وضع many=True لأنها قائمة)
+            # 2. تشغيل كلاس الفلترة الخاص بك يدوياً وتمرير البيانات له
+            filter_backend = ServiceFilter(request.GET, queryset=queryset)
+            
+            # 3. التأكد من أن الفلترة صحيحة وجلب البيانات المفلترة
+            if filter_backend.is_valid():
+                queryset = filter_backend.qs
+            else:
+                return Response(filter_backend.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            # 4. تطبيق الـ .only() لتحسين الأداء كما طلبت (أضفنا category للاستعلام ليعمل فلتر القسم بدون مشاكل)
+            services = queryset.only("title", "price", "city", "address", "category")
+            
+            # 5. السيريلايزر وإرجاع النتيجة
             serializer = ServiceSerializer(services, many=True)
-            
-            # 3. إرجاع البيانات بنجاح
             return Response(serializer.data, status=status.HTTP_200_OK)
             
         except Exception as e:
-            # تصحيح نص السجل ليعبر عن سياق جلب الخدمات وليس المستخدمين
             logger.error(f"[SECURITY] Fetch services list failed: {str(e)}")
             return Response(
                 {"error": "تعذر جلب البيانات المطلوبة حالياً."}, 
