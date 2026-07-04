@@ -23,7 +23,7 @@ logger=logging.getLogger(__name__)
 
 
 #------------createCategory-----------#
-class CreateCategory(APIView):
+class CreateCategoryView(APIView):
     permission_classes = [IsVendorUser]
     
     def post(self, request):
@@ -47,7 +47,7 @@ class CreateCategory(APIView):
             )
 #-------------createService-----------#
 
-class CreateService(APIView):
+class CreateServiceView(APIView):
     permission_classes = [IsVendorUser]
 
     def post(self, request):
@@ -74,7 +74,7 @@ class CreateService(APIView):
         
 #-------------updateSerivce--------------#
 
-class UpdateService(APIView):
+class UpdateServiceView(APIView):
     permission_classes = [IsVendorUser]
 
     def patch(self, request, category_slug):
@@ -90,7 +90,7 @@ class UpdateService(APIView):
             logger.error(f"[SECURITY] Database error during service update: {str(e)}")
             return Response({"error": "unable to update due to an internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 #-------------deleteSerivce-------------#
-class DeleteService(APIView):
+class DeleteServiceView(APIView):
     permission_classes=[IsVendorUser]
 
     def delete(self, request, category_slug):
