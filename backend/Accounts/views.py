@@ -1,7 +1,7 @@
 from django.utils import timezone
 from datetime import timedelta
 
-
+from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
