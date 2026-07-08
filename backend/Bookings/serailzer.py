@@ -58,6 +58,7 @@ class UpdateBookingStatusSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "status": {"required": False},
         }
+    
 
 class BookingSerializer(serializers.ModelSerializer):
     service = ServiceSerializer(read_only=True)
