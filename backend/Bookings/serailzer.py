@@ -46,6 +46,11 @@ class UpdateBookingSerializer(serializers.ModelSerializer):
             
         return attrs
     
+    def update(self,instance,attr,value, validated_data):
+        for attr,value in  validated_data.items():
+            setattr(instance,attr,value)
+        return instance
+    
 class UpdateBookingStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model =Booking

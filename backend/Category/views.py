@@ -10,7 +10,7 @@ from rest_framework import status
 
 import logging
 
-from utils.permission import IsVendorUser,IsAdminUser
+from utils.permission import IsAdminUser
 
 from .models import Categorys
 
@@ -47,7 +47,7 @@ class CreateCategoryView(APIView):
 #----------------updateCategory---------------#
 
 class UpdateCategoryView(APIView):
-    permission_classes = [IsVendorUser]
+    permission_classes = [IsAdminUser]
 
     def patch(self, request, name):
         try:

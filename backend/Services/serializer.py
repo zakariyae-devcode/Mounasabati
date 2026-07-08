@@ -47,6 +47,11 @@ class UpdateServiceSerializer(serializers.ModelSerializer):
             "city": {"required": False},
             "address": {"required": False},
         }
+    def update(self,instance,validate_data):
+        for attr,value in validate_data.items():
+            setattr(instance,attr,value)
+        instance.save()
+        return instance
 
 
 class ServiceSerializer(serializers.ModelSerializer):

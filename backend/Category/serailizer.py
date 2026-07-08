@@ -22,6 +22,10 @@ class UpdateCategorySerializer(serializers.ModelSerializer):
             "name": {"required": True, "allow_blank": True},  # تصحيح الخطأ الإملائي من allow_bank إلى allow_blank
             "image": {"required": False, "allow_null": True}
         }
+    def update(self, instance, validated_data,attr,value):
+        for attr,value in validated_data.items():
+            setattr(instance,attr,value)
+        return instance
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Categorys
