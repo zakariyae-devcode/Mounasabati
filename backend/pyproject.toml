@@ -14,4 +14,5 @@ dependencies = [
     "drf-yasg>=1.21.15",
     "markdown>=3.10.2",
     "pillow>=12.2.0",
+    "uritemplate>=4.2.0",
 ]

@@ -32,7 +32,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 class RegisterView(APIView):
     """إنشاء حساب مستخدم جديد بأمان"""
-    @swagger_auto_schema(request_body=UserRegisterSerializer)
+  
     def post(self, request):
         try:
             serializer = UserRegisterSerializer(data=request.data)
@@ -97,7 +97,7 @@ class CustomLoginView(ObtainAuthToken):
 class UserDetailView(APIView):
     """جلب بيانات المستخدم الحالي الآمن"""
     permission_classes = [IsAuthenticated]
-    @swagger_auto_schema(request_body=UserSerializer)
+   
     def get(self, request):
         try:
             serializer = UserSerializer(request.user)
@@ -110,7 +110,7 @@ class UserDetailView(APIView):
 class UserUpdateView(APIView):
     """تحديث بيانات المستخدم الحالي جزئياً بأمان"""
     permission_classes = [IsAuthenticated]
-    @swagger_auto_schema(request_body=UserUpdateSerializer)
+   
     def patch(self, request):
         try:
             serializer = UserUpdateSerializer(request.user, data=request.data, partial=True)
@@ -146,7 +146,7 @@ class UserSelfDeleteView(APIView):
 class ChangePasswordView(APIView): 
     """تغيير كلمة المرور للمستخدم المسجل"""
     permission_classes = [IsAuthenticated]
-    @swagger_auto_schema(request_body=ChangePassword)
+   
     def put(self, request):
         try:
             serializer = ChangePassword(request.user, data=request.data)
@@ -161,7 +161,7 @@ class ChangePasswordView(APIView):
 
 class EmailResetView(APIView):
     """إرسال رابط استعادة كلمة المرور مع حماية ضد الـ User Enumeration"""
-    @swagger_auto_schema(request_body=EmailRest)
+   
     def post(self, request):
         serializer = EmailRest(data=request.data)
         if serializer.is_valid():
@@ -203,7 +203,7 @@ class EmailResetView(APIView):
 
 class ForgotPasswordView(APIView):
     """إعادة تعيين كلمة المرور باستخدام الـ CIN بشكل معقم ومحمي"""
-    @swagger_auto_schema(request_body=ForgotPassword)
+    
     def post(self, request): 
         serializer = ForgotPassword(data=request.data)
         if serializer.is_valid():
@@ -227,7 +227,7 @@ class ForgotPasswordView(APIView):
 class LogoutView(APIView):
     """تسجيل الخروج الآمن"""
     permission_classes = [IsAuthenticated]
-    @swagger_auto_schema(request_body=Logout)
+   
     def post(self, request):
         try:
             serializer = Logout(data=request.data)
@@ -246,7 +246,7 @@ class LogoutView(APIView):
 class UserView(APIView):
     """جلب قائمة المستخدمين (محمي بصلاحيات المسؤول الإداري الصارمة)"""
     permission_classes = [IsAdminUser]
-    @swagger_auto_schema(request_body=UserSerializer)
+   
     def get(self, request):
         try:
             users = Users.objects.all().only('id', 'username', 'email', 'cin', 'role')
@@ -276,7 +276,7 @@ class AdminDeleteUserView(APIView):
 class AdminUpdateUserRoleView(APIView):
     """تحديث دور المستخدم (محمي بصلاحيات المسؤول الإداري الصارمة)"""
     permission_classes = [IsAdminUser]
-    @swagger_auto_schema(request_body=UpdateRole)
+
     def patch(self, request, user_cin):
         try:
             user = Users.objects.get(cin=user_cin)

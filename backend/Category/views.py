@@ -20,12 +20,12 @@ from .serailizer import CreateCategorySerializer,UpdateCategorySerializer,Catego
 
 logger=logging.getLogger(__name__)
 
-from drf_yasg.utils import swagger_auto_schema
+
 # Create your views here.
 #------------createCategory-----------#
 class CreateCategoryView(APIView):
     permission_classes = [IsAdminUser]
-    @swagger_auto_schema(request_body=CreateCategorySerializer)
+   
     def post(self, request):
         try:
             serializer = CreateCategorySerializer(data=request.data)
@@ -49,7 +49,7 @@ class CreateCategoryView(APIView):
 
 class UpdateCategoryView(APIView):
     permission_classes = [IsAdminUser]
-    @swagger_auto_schema(request_body=UpdateCategorySerializer)
+   
     def patch(self, request, name):
         try:
             service = get_object_or_404(Categorys, name=name)
@@ -79,7 +79,7 @@ class DeleteCategoryView(APIView):
         
 class CategoryAdminView(APIView):
     permission_classes = [IsAdminUser]
-    @swagger_auto_schema(request_body=CategorySerializer)
+   
     def get(self,request):
         category=Categorys.objects.all().order_by('-create_at')
         serializer=CategorySerializer(category,many=True)

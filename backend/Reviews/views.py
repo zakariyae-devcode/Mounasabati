@@ -43,7 +43,7 @@ class CreateReviewView(APIView):
         
 class ServiceReviewLisView(APIView):
     permission_classes=[AllowAny]
-    @swagger_auto_schema(request_body=ReviewSerializer)
+   
     def get(self,request,service_id,*args,**kwargs):
         try:
             querySet=Review.objects.filter(service_id=service_id).order_by("-create_at")

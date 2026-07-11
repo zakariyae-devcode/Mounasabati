@@ -22,7 +22,8 @@ from drf_yasg.utils import swagger_auto_schema
 class CreateBookingView(APIView):
     # إجبار الزبون على أن يكون مسجلاً دخوله
     permission_classes = [IsClientUser]
-    @swagger_auto_schema(request_body=CreateBookingSerializer)
+    
+    
     def post(self, request, service_id):
     
         service = get_object_or_404(Service, id=service_id)
@@ -58,7 +59,7 @@ class CreateBookingView(APIView):
 class UpdateBookingView(APIView):
     permission_classes = [IsClientUser]
 
-    @swagger_auto_schema(request_body=UpdateBookingSerializer)
+    
     def patch(self, request, booking_id):
         try:
            
@@ -136,7 +137,7 @@ class DeleteBookingView(APIView):
 class BookingClientView(APIView):
     # استخدام كلاس الحماية الخاص بالزبون الذي كتبته أنت
     permission_classes = [IsClientUser]
-    @swagger_auto_schema(request_body=BookingSerializer)
+   
     def get(self, request):
         # جلب الحجوزات الخاصة بهذا الزبون فقط لمنع التجسس على بيانات الآخرين
         queryset = Booking.objects.filter(client=request.user).order_by('-created_at')
@@ -149,7 +150,7 @@ class BookingClientView(APIView):
     
 class BookingVendorView(APIView):
     permission_classes = [IsVendorUser]
-    @swagger_auto_schema(request_body=BookingSerializer)
+    
     def get(self, request, booking_id):
        
         
@@ -162,7 +163,7 @@ class BookingVendorView(APIView):
 
 class BookingUpdateSatus(APIView):
     permission_classes = [IsVendorUser]
-    @swagger_auto_schema(request_body=BookingSerializer)
+   
     def patch(self,request,booking_id):
         try:
             booking = get_object_or_404(Booking, id=booking_id)
@@ -199,7 +200,7 @@ class BookingUpdateSatus(APIView):
 
 class BookingAdminView(APIView):
     permission_classes = [IsAdminUser]
-    @swagger_auto_schema(request_body=BookingSerializer)
+   
     def get(self, request):
        
         

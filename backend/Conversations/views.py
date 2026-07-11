@@ -37,7 +37,7 @@ class SendMessageView(APIView):
 class ChatHistoryView(APIView):
 
     permission_classes=[IsAuthenticated]
-    @swagger_auto_schema(request_body=MessageSerializer)
+    
     def get(self, request,receiver_id):
         try:
             queryset=Message.objects.filter(Q(sender=request.user,receiver_id=receiver_id)| Q(sender_id=receiver_id,receiver=request.user)).order_by('-created_at')
