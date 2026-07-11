@@ -11,7 +11,7 @@ dependencies = [
     "djangorestframework>=3.17.1",
     "djangorestframework-simplejwt>=5.5.1",
     "dotenv>=0.9.9",
+    "drf-yasg>=1.21.15",
     "markdown>=3.10.2",
     "pillow>=12.2.0",
-    
 ]
