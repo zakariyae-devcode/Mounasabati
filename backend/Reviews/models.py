@@ -10,7 +10,7 @@ class Review(models.Model): # 👈 تصحيح الإملاء (Review)
     service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name="reviews")
     
     # التقييم من 1 إلى 5 نجوم
-    rating = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)], verbose_name="التقييم")
+    rating = models.PositiveIntegerField(choices=[(i, str(i)) for i in range(1, 6)], verbose_name="التقييم")
     comment = models.TextField(null=True, blank=True, verbose_name="التعليق") # 👈 تصحيح الإملاء (comment)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -24,3 +24,4 @@ class Review(models.Model): # 👈 تصحيح الإملاء (Review)
 
     def __str__(self):
         return f"تقييم {self.rating}/5 من {self.client.username} على {self.service.title}"
+    
