@@ -9,14 +9,14 @@ from django.db import DatabaseError
 from .models import Message
 from .serializers import MessageSerializer
 
-
+from drf_yasg.utils import swagger_auto_schema
 
 logger = logging.getLogger(__name__)
 class SendMessageView(APIView):
 
     permission_classes=[IsAuthenticated]
 
-
+    @swagger_auto_schema(request_body=MessageSerializer)
     def post(self,request):
         try:
             serializer=MessageSerializer(data=request.data)
@@ -37,7 +37,7 @@ class SendMessageView(APIView):
 class ChatHistoryView(APIView):
 
     permission_classes=[IsAuthenticated]
-
+    @swagger_auto_schema(request_body=MessageSerializer)
     def get(self, request,receiver_id):
         try:
             queryset=Message.objects.filter(Q(sender=request.user,receiver_id=receiver_id)| Q(sender_id=receiver_id,receiver=request.user)).order_by('-created_at')

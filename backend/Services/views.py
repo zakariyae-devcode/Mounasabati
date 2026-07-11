@@ -20,15 +20,15 @@ from .serializer import (CreateServiceSerializer,UpdateServiceSerializer,Service
 
 logger=logging.getLogger(__name__)
 
-
-# Create your views here.
+from drf_yasg.utils import swagger_auto_schema
 
 
 #-------------createService-----------#
 
 class CreateServiceView(APIView):
-    permission_classes = [IsVendorUser]
 
+    permission_classes = [IsVendorUser]
+    @swagger_auto_schema(request_body=CreateServiceSerializer)
     def post(self, request):
         try:
             # إصلاح الأخطاء الإملائية في اسم المتغير serializer
@@ -55,7 +55,7 @@ class CreateServiceView(APIView):
 
 class UpdateServiceView(APIView):
     permission_classes = [IsVendorUser]
-
+    @swagger_auto_schema(request_body=UpdateServiceSerializer)
     def patch(self, request, category_slug):
         try:
             service = get_object_or_404(Service, category__slug=category_slug, vendor=request.user)
@@ -83,7 +83,7 @@ class DeleteServiceView(APIView):
 
 class ServiceView(APIView):
    
-    
+    @swagger_auto_schema(request_body=ServiceSerializer)
     def get(self, request):
         try:
             # 1. جلب الخدمات الأساسية
@@ -115,7 +115,7 @@ class ServiceView(APIView):
 class ServiceDetailsView(APIView):
     # حماية الـ View ليكون للزبائن فقط
     permission_classes = [IsClientUser]
-
+    @swagger_auto_schema(request_body=ServiceSerializer)
     def get(self, request, category_slug):
         try:
             # 1. التأكد أولاً من أن القسم (Category) موجود وصحيح في قاعدة البيانات
@@ -142,7 +142,7 @@ class ServiceDetailsView(APIView):
 class ServiceVendorView(APIView):
     # إجبار أن يكون المستخدم تاجر مسجل دخوله
     permission_classes = [IsVendorUser]
-
+    @swagger_auto_schema(request_body=ServiceSerializer)
     # نستقبل الـ category_slug من الرابط (URL)
     def get(self, request, category_slug):
         try:
@@ -170,7 +170,7 @@ class ServiceVendorView(APIView):
 
 class ServiceAdminView(APIView):
     permission_classes = [IsAdminUser]
-
+    @swagger_auto_schema(request_body=ServiceSerializer)
     def get(self, request):
        
         

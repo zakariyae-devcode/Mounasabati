@@ -10,9 +10,12 @@ from Bookings.models import Booking
 from .models import Payment
 from .serializers import PaymentSerializer
 
+from drf_yasg.utils import swagger_auto_schema
+
 logger = logging.getLogger(__name__)
 class ProcessPaymentView(APIView):
     permission_classes = [IsAuthenticated]
+    @swagger_auto_schema(request_body=PaymentSerializer)
     def post(self, request):
         try:
             booking_id = request.data.get('booking')

@@ -9,15 +9,17 @@ from django.db import DatabaseError
 from Reviews.models import Review
 from .serializers import ReviewSerializer
 from utils.permission import IsClientUser,IsAdminUser
+
+from drf_yasg.utils import swagger_auto_schema
+
 logger = logging.getLogger(__name__)
 
 
 
-def hello(request):
-    return {"message":"Hello"}
 
 class CreateReviewView(APIView):
     permission_classes=[IsClientUser]
+    @swagger_auto_schema(request_body=ReviewSerializer)
     def post(self, request, *args, **kwargs):
         try:
             serializer=ReviewSerializer(data=request.data)
@@ -41,7 +43,7 @@ class CreateReviewView(APIView):
         
 class ServiceReviewLisView(APIView):
     permission_classes=[AllowAny]
-
+    @swagger_auto_schema(request_body=ReviewSerializer)
     def get(self,request,service_id,*args,**kwargs):
         try:
             querySet=Review.objects.filter(service_id=service_id).order_by("-create_at")
@@ -54,7 +56,7 @@ class ServiceReviewLisView(APIView):
 
 class DeleteReviewView(APIView):
     permission_classes = [IsClientUser]
-
+    @swagger_auto_schema(request_body=ReviewSerializer)
     def delete(self,request,review_id,*args,**kwargs):
         try:
             review=get_object_or_404(Review,review_id=review_id)
@@ -79,7 +81,7 @@ class DeleteReviewView(APIView):
 
 class DeleteReviewAdminView(APIView):
     permission_classes = [IsAdminUser]
-
+    @swagger_auto_schema(request_body=ReviewSerializer)
     def delete(self,request,review_id,*args,**kwargs):
         try:
             review=get_object_or_404(Review,review_id=review_id)

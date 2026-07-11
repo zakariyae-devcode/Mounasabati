@@ -8,6 +8,7 @@ from django.db import DatabaseError
 from .models import Notification
 from .serializer import NotificationSerializer
 
+from drf_yasg.utils import swagger_auto_schema
 logger = logging.getLogger(__name__)
 
 # Create your views here.
@@ -18,6 +19,7 @@ def notification(request):
 
 class UserNotificationListView(APIView):
     permission_classes = [IsAuthenticated]
+    @swagger_auto_schema(request_body=NotificationSerializer)
     def get(self, request,*args,**kwargs):
 
         try:
@@ -35,6 +37,7 @@ class UserNotificationListView(APIView):
         
 class MarkNotificationReadView(APIView):
     permission_classes = [IsAuthenticated]
+    @swagger_auto_schema(request_body=NotificationSerializer)
     def patch(self, request, notification_id):
         try:
            notification = get_object_or_404(Notification, id=notification_id, user=request.user)
