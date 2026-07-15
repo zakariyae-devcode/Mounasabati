@@ -1,9 +1,9 @@
-
+import  HeroSlider from './components/saliderBar';
 
 export default function Home() {
   return (
     <div>
-      hello
+      <HeroSlider/>
     </div>
   );
 }
