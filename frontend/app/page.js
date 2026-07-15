@@ -1,9 +1,19 @@
-import  HeroSlider from './components/saliderBar';
+'use client'
+import React from 'react';
+import HeroSlider from './components/home/saliderBar'; 
 
-export default function Home() {
+import AboutSection from './components/home/AboutSection';
+
+export default function HomePage() {
   return (
-    <div>
-      <HeroSlider/>
-    </div>
+    <main style={{ backgroundColor: '#1e0b36', minHeight: '100vh' }}>
+      {/* 1. السلايدر الفخم في المقدمة */}
+      <HeroSlider />
+
+      <AboutSection/>
+
+      
+      
+    </main>
   );
 }
