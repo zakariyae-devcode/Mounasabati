@@ -89,7 +89,8 @@ export default function AboutSection() {
             <div className="col-12 col-lg-6 d-flex justify-content-center">
               <div className="luxury-border w-100" style={{ maxWidth: '480px', height: '520px', position: 'relative' }}>
                 <Image
-                  src="/images/weddingCouple.jpg" // يمكنك استبدالها بصورة لعروس مغربية أو تفصيل ديكور
+                  // تم استبدال المسار المحلي برابط صورة زفاف فخمة من Unsplash
+                  src="/images/wedding.jpg"
                   alt="الفخامة المغربية الأصيلة"
                   fill
                   style={{ objectFit: 'cover', borderRadius: '10px' }}
