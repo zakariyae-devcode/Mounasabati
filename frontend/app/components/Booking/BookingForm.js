@@ -2,21 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Amiri, Tajawal } from 'next/font/google';
-
-const amiri = Amiri({ subsets: ['arabic'], weight: ['400', '700'], variable: '--font-amiri' });
-const tajawal = Tajawal({ subsets: ['arabic'], weight: ['300', '400', '500', '700'], variable: '--font-tajawal' });
-
-const COLORS = {
-  plum: '#3D0B4F',
-  purple: '#5E1777',
-  gold: '#C9A227',
-  goldLight: '#E4C766',
-  ivory: '#FBF8F2',
-  ink: '#2B2530',
-  muted: '#8A7F91',
-  cream: '#FCFBF7'
-};
 
 export default function BookingForm({ services = [] }) {
   const searchParams = useSearchParams();
@@ -25,7 +10,7 @@ export default function BookingForm({ services = [] }) {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    service: [], // 🎯 تم تحويلها إلى مصفوفة لدعم تعدد الخيارات
+    service: [], // مصفوفة لدعم تعدد الخيارات
     event_date: '',
     notes: ''
   });
@@ -45,26 +30,24 @@ export default function BookingForm({ services = [] }) {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // دالة ذكية لإضافة أو إزالة الخدمات أو اختيار الكل
+  // دالة إضافة أو إزالة الخدمات
   const handleServiceSelect = (id) => {
     setFormData(prev => {
       const isAlreadySelected = prev.service.includes(id);
       if (isAlreadySelected) {
-        // إذا كانت مختارة سابقاً، نلغي اختيارها
         return { ...prev, service: prev.service.filter(item => item !== id) };
       } else {
-        // إذا لم تكن مختارة، نضيفها للمصفوفة
         return { ...prev, service: [...prev.service, id] };
       }
     });
   };
 
-  // دالة سريعة لاختيار جميع الخدمات بضغطة زر واحدة
+  // دالة اختيار وإلغاء تحديد جميع الخدمات
   const handleSelectAll = () => {
     if (formData.service.length === services.length) {
-      setFormData(prev => ({ ...prev, service: [] })); // إلغاء تحديد الكل
+      setFormData(prev => ({ ...prev, service: [] }));
     } else {
-      setFormData(prev => ({ ...prev, service: services.map(srv => srv.id) })); // تحديد الكل
+      setFormData(prev => ({ ...prev, service: services.map(srv => srv.id) }));
     }
   };
 
@@ -84,41 +67,60 @@ export default function BookingForm({ services = [] }) {
   };
 
   return (
-    <div className={`${amiri.variable} ${tajawal.variable} booking-frame`} dir="rtl">
-      <div className="booking-card">
+    <div className="container-fluid py-5 d-flex justify-content-center align-items-center" dir="rtl" style={{ backgroundColor: 'transparent' }}>
+      <div 
+        className="card shadow-lg border-0 p-4 p-sm-5 text-start w-100" 
+        style={{ 
+          maxWidth: '580px', 
+          backgroundColor: 'rgba(251, 248, 242, 0.96)', 
+          borderRadius: '24px',
+          boxShadow: '0 40px 90px -30px rgba(61, 11, 79, 0.25) !important'
+        }}
+      >
         {successMessage ? (
-          <div className="text-center py-5 success-wrap">
-            <div className="success-badge">
-              <i className="bi bi-check" />
+          /* واجهة نجاح الإرسال */
+          <div className="text-center py-4">
+            <div 
+              className="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4 bg-white shadow-sm"
+              style={{ width: '70px', height: '70px', border: '2px solid #C9A227', color: '#C9A227' }}
+            >
+              <i className="bi bi-check-lg fs-1" />
             </div>
-            <h3 className="success-title">طلب حجز مكتمل</h3>
-            <p className="success-copy">{successMessage}</p>
+            <h3 className="fw-bold mb-2" style={{ color: '#3D0B4F' }}>طلب حجز مكتمل</h3>
+            <p className="text-muted mb-4 small px-3" style={{ lineHeight: '1.6' }}>{successMessage}</p>
             <button
               type="button"
-              className="btn-return"
+              className="btn btn-outline-warning px-4 rounded-3 text-dark fw-bold btn-sm"
+              style={{ borderColor: '#C9A227' }}
               onClick={() => setSuccessMessage('')}
             >
               العودة للاستمارة
             </button>
           </div>
         ) : (
+          /* نموذج الحجز الملوكي */
           <form onSubmit={handleSubmit}>
-            <div className="form-heading">
-              <span className="eyebrow">PREMIUM EXPERIENCES</span>
-              <h2 className="form-title">تنسيق المناسبات الملوكية</h2>
-              <div className="modern-divider">
-                <span className="dot" />
+            <div className="text-center mb-4">
+              <span className="d-block text-uppercase fw-bold mb-1" style={{ color: '#C9A227', fontSize: '0.68rem', letterSpacing: '0.2em' }}>
+                PREMIUM EXPERIENCES
+              </span>
+              <h2 className="fw-bold m-0" style={{ color: '#3D0B4F' }}>تنسيق المناسبات الملوكية</h2>
+              <div className="d-flex align-items-center justify-content-center mt-2">
+                <span className="p-1 rounded-circle" style={{ background: '#C9A227', boxShadow: '0 0 8px 1px #C9A227' }} />
               </div>
             </div>
 
             {/* حقل الاسم الكامل */}
-            <div className="field-group">
-              <label className="field-label">الاسم الكامل</label>
-              <div className="input-wrapper">
-                <i className="bi bi-person input-icon" />
+            <div className="mb-3">
+              <label className="form-label small fw-bold" style={{ color: '#5E1777' }}>الاسم الكامل</label>
+              <div className="input-group">
+                <span className="input-group-text bg-white border-end-0 text-muted px-3" style={{ borderRadius: '0 12px 12px 0' }}>
+                  <i className="bi bi-person" />
+                </span>
                 <input
                   type="text"
-                  className="field-input"
+                  className="form-content form-control shadow-none border-start-0 py-2 bg-light bg-opacity-50"
+                  style={{ borderRadius: '12px 0 0 12px', fontSize: '0.92rem' }}
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
@@ -129,13 +131,16 @@ export default function BookingForm({ services = [] }) {
             </div>
 
             {/* حقل رقم الهاتف */}
-            <div className="field-group">
-              <label className="field-label">رقم الهاتف للاتصال</label>
-              <div className="input-wrapper">
-                <i className="bi bi-telephone input-icon" />
+            <div className="mb-3">
+              <label className="form-label small fw-bold" style={{ color: '#5E1777' }}>رقم الهاتف للاتصال</label>
+              <div className="input-group">
+                <span className="input-group-text bg-white border-end-0 text-muted px-3" style={{ borderRadius: '0 12px 12px 0' }}>
+                  <i className="bi bi-telephone" />
+                </span>
                 <input
                   type="tel"
-                  className="field-input"
+                  className="form-content form-control shadow-none border-start-0 py-2 bg-light bg-opacity-50"
+                  style={{ borderRadius: '12px 0 0 12px', fontSize: '0.92rem' }}
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
@@ -145,33 +150,54 @@ export default function BookingForm({ services = [] }) {
               </div>
             </div>
 
-            {/* قسم اختيار الخدمات المتعددة مع زر تحديد الكل */}
-            <div className="field-group">
+            {/* قسم اختيار الخدمات المتعددة */}
+            <div className="mb-3">
               <div className="d-flex justify-content-between align-items-center mb-2">
-                <label className="field-label m-0">الخدمات المراد تنسيقها (يمكنك اختيار أكثر من خدمة)</label>
+                <label className="form-label small fw-bold m-0" style={{ color: '#5E1777' }}>
+                  الخدمات المراد تنسيقها (يمكنك اختيار أكثر من خدمة)
+                </label>
                 <button 
                   type="button" 
                   onClick={handleSelectAll}
-                  className="btn-select-all"
+                  className="btn btn-link p-0 text-decoration-none small fw-bold"
+                  style={{ color: '#C9A227', fontSize: '0.78rem' }}
                 >
                   {formData.service.length === services.length ? 'إلغاء الكل' : 'اختيار الكل'}
                 </button>
               </div>
 
-              <div className="services-selector-grid">
+              {/* شبكة خيارات الخدمات المتجاوبة مع التبديل اللوني الفاخر */}
+              <div className="row g-2">
                 {services.map((srv) => {
                   const isSelected = formData.service.includes(srv.id);
                   return (
-                    <div 
-                      key={srv.id} 
-                      className={`service-option-card ${isSelected ? 'active' : ''}`}
-                      onClick={() => handleServiceSelect(srv.id)}
-                    >
-                      {/* المربع الصغير المتجاوب (Checkbox Style) */}
-                      <span className="checkbox-box">
-                        {isSelected && <i className="bi bi-check-short text-white" />}
-                      </span>
-                      <span className="service-opt-title">{srv.title}</span>
+                    <div key={srv.id} className="col-12 col-sm-6">
+                      <div 
+                        className={`d-flex align-items-center gap-2 p-3 rounded-3 border cursor-pointer user-select-none transition-all`}
+                        style={{
+                          backgroundColor: isSelected ? '#ffffff' : '#FCFBF7',
+                          borderColor: isSelected ? '#C9A227' : 'rgba(94, 23, 119, 0.06)',
+                          boxShadow: isSelected ? '0 8px 20px -8px rgba(201, 162, 39, 0.25)' : 'none',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => handleServiceSelect(srv.id)}
+                      >
+                        {/* مربع الاختيار (Checkbox Style) */}
+                        <div 
+                          className="rounded d-flex align-items-center justify-content-center"
+                          style={{
+                            width: '18px',
+                            height: '18px',
+                            border: `1.5px solid ${isSelected ? '#5E1777' : '#8A7F91'}`,
+                            backgroundColor: isSelected ? '#5E1777' : '#ffffff'
+                          }}
+                        >
+                          {isSelected && <i className="bi bi-check text-white" style={{ fontSize: '0.75rem' }} />}
+                        </div>
+                        <span className={`small ${isSelected ? 'fw-bold' : 'fw-medium'}`} style={{ color: isSelected ? '#3D0B4F' : '#2B2530' }}>
+                          {srv.title}
+                        </span>
+                      </div>
                     </div>
                   );
                 })}
@@ -179,13 +205,16 @@ export default function BookingForm({ services = [] }) {
             </div>
 
             {/* تاريخ المناسبة */}
-            <div className="field-group">
-              <label className="field-label">تاريخ الحفل المقترح</label>
-              <div className="input-wrapper">
-                <i className="bi bi-calendar-event input-icon" />
+            <div className="mb-3">
+              <label className="form-label small fw-bold" style={{ color: '#5E1777' }}>تاريخ الحفل المقترح</label>
+              <div className="input-group">
+                <span className="input-group-text bg-white border-end-0 text-muted px-3" style={{ borderRadius: '0 12px 12px 0' }}>
+                  <i className="bi bi-calendar-event" />
+                </span>
                 <input
                   type="date"
-                  className="field-input"
+                  className="form-content form-control shadow-none border-start-0 py-2 bg-light bg-opacity-50"
+                  style={{ borderRadius: '12px 0 0 12px', fontSize: '0.92rem' }}
                   name="event_date"
                   value={formData.event_date}
                   onChange={handleChange}
@@ -195,12 +224,15 @@ export default function BookingForm({ services = [] }) {
             </div>
 
             {/* طلبات خاصة */}
-            <div className="field-group mb-4">
-              <label className="field-label">رؤيتكم وتفاصيلكم الخاصة</label>
-              <div className="input-wrapper">
-                <i className="bi bi-chat-quote input-icon textarea-icon" />
+            <div className="mb-4">
+              <label className="form-label small fw-bold" style={{ color: '#5E1777' }}>رؤيتكم وتفاصيلكم الخاصة</label>
+              <div className="input-group align-items-start">
+                <span className="input-group-text bg-white border-end-0 text-muted px-3 pt-2" style={{ borderRadius: '0 12px 12px 0', minHeight: '86px' }}>
+                  <i className="bi bi-chat-quote" />
+                </span>
                 <textarea
-                  className="field-input"
+                  className="form-content form-control shadow-none border-start-0 py-2 bg-light bg-opacity-50"
+                  style={{ borderRadius: '12px 0 0 12px', fontSize: '0.92rem' }}
                   name="notes"
                   rows="3"
                   value={formData.notes}
@@ -210,10 +242,15 @@ export default function BookingForm({ services = [] }) {
               </div>
             </div>
 
-            {/* زر تأكيد الحجز */}
+            {/* زر تأكيد الحجز المجمع */}
             <button
               type="submit"
-              className="btn-submit-modern"
+              className="btn w-100 py-3 text-white fw-bold d-flex align-items-center justify-content-center gap-2 border-0"
+              style={{ 
+                background: 'linear-gradient(135deg, #5E1777 0%, #3D0B4F 100%)', 
+                borderRadius: '14px',
+                boxShadow: '0 15px 35px -10px rgba(94, 23, 119, 0.4)'
+              }}
               disabled={loading}
             >
               {loading ? (
@@ -228,284 +265,6 @@ export default function BookingForm({ services = [] }) {
           </form>
         )}
       </div>
-
-      <style jsx>{`
-        .booking-frame {
-          --font-heading: var(--font-amiri), 'Amiri', serif;
-          --font-body: var(--font-tajawal), 'Tajawal', sans-serif;
-          display: flex;
-          justify-content: center;
-          padding: 20px 15px;
-          font-family: var(--font-body);
-        }
-
-        .booking-card {
-          position: relative;
-          width: 100%;
-          max-width: 560px;
-          background: rgba(251, 248, 242, 0.96);
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(201, 162, 39, 0.2);
-          border-radius: 24px;
-          padding: 50px 40px;
-          box-shadow: 0 40px 90px -30px rgba(61, 11, 79, 0.25);
-          animation: smoothRise 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes smoothRise {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        .form-heading {
-          text-align: center;
-          margin-bottom: 35px;
-        }
-
-        .eyebrow {
-          font-size: 0.68rem;
-          letter-spacing: 0.2em;
-          color: ${COLORS.gold};
-          font-weight: 700;
-          display: block;
-          margin-bottom: 6px;
-        }
-
-        .form-title {
-          font-family: var(--font-heading);
-          font-size: 1.95rem;
-          font-weight: 700;
-          color: ${COLORS.plum};
-          margin: 0;
-        }
-
-        .modern-divider {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-top: 12px;
-        }
-        .modern-divider .dot {
-          width: 5px;
-          height: 5px;
-          border-radius: 50%;
-          background: ${COLORS.gold};
-          box-shadow: 0 0 8px 1px ${COLORS.gold};
-        }
-
-        .field-group {
-          margin-bottom: 24px;
-        }
-
-        .field-label {
-          display: block;
-          font-size: 0.8rem;
-          font-weight: 700;
-          color: ${COLORS.purple};
-          margin-bottom: 8px;
-          letter-spacing: 0.03em;
-        }
-
-        .btn-select-all {
-          background: transparent;
-          border: none;
-          color: ${COLORS.gold};
-          font-size: 0.78rem;
-          font-weight: 700;
-          cursor: pointer;
-          padding: 0 4px;
-          transition: color 0.2s;
-        }
-        .btn-select-all:hover {
-          color: ${COLORS.plum};
-        }
-
-        .input-wrapper {
-          position: relative;
-          display: flex;
-          align-items: center;
-        }
-
-        .input-icon {
-          position: absolute;
-          right: 16px;
-          color: ${COLORS.muted};
-          font-size: 1.1rem;
-          pointer-events: none;
-          transition: color 0.3s;
-        }
-        .textarea-icon {
-          top: 14px;
-        }
-
-        .field-input {
-          width: 100%;
-          padding: 14px 44px 14px 16px;
-          font-size: 0.92rem;
-          color: ${COLORS.ink};
-          background: ${COLORS.cream};
-          border: 1px solid rgba(94, 23, 119, 0.08);
-          border-bottom: 2px solid rgba(94, 23, 119, 0.15);
-          border-radius: 12px;
-          outline: none;
-          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .field-input:focus {
-          background: #ffffff;
-          border-color: rgba(201, 162, 39, 0.3);
-          border-bottom-color: ${COLORS.gold};
-          box-shadow: 0 10px 25px -10px rgba(201, 162, 39, 0.15);
-        }
-        .field-input:focus + .input-icon {
-          color: ${COLORS.gold};
-        }
-
-        .services-selector-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 12px;
-        }
-
-        .service-option-card {
-          background: ${COLORS.cream};
-          border: 1px solid rgba(94, 23, 119, 0.06);
-          border-radius: 12px;
-          padding: 14px 16px;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          cursor: pointer;
-          transition: all 0.25s ease;
-          user-select: none;
-        }
-
-        .service-option-card:hover {
-          border-color: rgba(201, 162, 39, 0.4);
-          background: #ffffff;
-        }
-
-        .service-option-card.active {
-          background: #ffffff;
-          border-color: ${COLORS.gold};
-          box-shadow: 0 8px 20px -8px rgba(201, 162, 39, 0.25);
-        }
-
-        /* مربع الاختيار المتعدد العصري */
-        .checkbox-box {
-          width: 16px;
-          height: 16px;
-          border-radius: 4px;
-          border: 1.5px solid ${COLORS.muted};
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all 0.2s;
-          background: #ffffff;
-        }
-
-        .service-option-card.active .checkbox-box {
-          border-color: ${COLORS.purple};
-          background: ${COLORS.purple};
-        }
-
-        .service-opt-title {
-          font-size: 0.88rem;
-          font-weight: 500;
-          color: ${COLORS.ink};
-        }
-        .service-option-card.active .service-opt-title {
-          color: ${COLORS.plum};
-          font-weight: 700;
-        }
-
-        .btn-submit-modern {
-          width: 100%;
-          padding: 15px;
-          background: linear-gradient(135deg, ${COLORS.purple} 0%, ${COLORS.plum} 100%);
-          border: none;
-          border-radius: 14px;
-          color: #ffffff;
-          font-weight: 700;
-          font-size: 0.98rem;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          box-shadow: 0 15px 35px -10px rgba(94, 23, 119, 0.4);
-          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .btn-submit-modern:hover:not(:disabled) {
-          transform: translateY(-2px);
-          box-shadow: 0 20px 40px -10px rgba(94, 23, 119, 0.5);
-          background: linear-gradient(135deg, #711c8f 0%, ${COLORS.purple} 100%);
-        }
-
-        .btn-submit-modern:active {
-          transform: translateY(0);
-        }
-
-        .success-badge {
-          width: 70px;
-          height: 70px;
-          margin: 0 auto 24px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #ffffff;
-          border: 2px solid ${COLORS.gold};
-          border-radius: 50%;
-          color: ${COLORS.gold};
-          font-size: 2.5rem;
-          box-shadow: 0 15px 30px -10px rgba(201, 162, 39, 0.3);
-        }
-
-        .success-title {
-          font-family: var(--font-heading);
-          font-size: 1.75rem;
-          color: ${COLORS.plum};
-          font-weight: 700;
-        }
-
-        .success-copy {
-          color: ${COLORS.muted};
-          font-size: 0.92rem;
-          max-width: 320px;
-          margin: 10px auto 25px;
-          line-height: 1.6;
-        }
-
-        .btn-return {
-          padding: 10px 24px;
-          background: transparent;
-          border: 1px solid ${COLORS.gold};
-          color: ${COLORS.purple};
-          border-radius: 10px;
-          font-size: 0.88rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.25s;
-        }
-        .btn-return:hover {
-          background: ${COLORS.gold};
-          color: #ffffff;
-        }
-
-        @media (max-width: 576px) {
-          .booking-card {
-            padding: 35px 20px;
-          }
-          .services-selector-grid {
-            grid-template-columns: 1fr;
-            gap: 8px;
-          }
-          .form-title {
-            font-size: 1.6rem;
-          }
-        }
-      `}</style>
     </div>
   );
 }
