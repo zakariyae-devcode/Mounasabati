@@ -39,10 +39,10 @@ export default function Header() {
 
             {/* الوسط: روابط التنقل */}
             <nav className="d-none d-md-flex align-items-center gap-4">
-              <a href="#home" className="text-decoration-none fw-bold px-2 andalusian-font" style={{ color: '#d4af37' }}>
+              <a href="/" className="text-decoration-none fw-bold px-2 andalusian-font" style={{ color: '#d4af37' }}>
                 الرئيسية
               </a>
-              <a href="#features" className="text-decoration-none fw-bold px-2 andalusian-font" style={{ color: '#d4af37', fontSize: '20px' }}>
+              <a href="/about" className="text-decoration-none fw-bold px-2 andalusian-font" style={{ color: '#d4af37', fontSize: '20px' }}>
                 المميزات
               </a>
               <a href="#booking" className="text-decoration-none fw-bold px-2 andalusian-font" style={{ color: '#d4af37', fontSize: '20px' }}>
