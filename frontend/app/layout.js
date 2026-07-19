@@ -3,6 +3,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import Header from './components/headers';
 
 import Footer from './components/footer';
+
+import FloatingChatWidget from './components/Chat/FloatingChatWidget';
 export const metadata = {
   title: 'منصة مناسباتي',
   description: 'النظام المغربي الحديث لإدارة وحجز المناسبات والمواعيد',
@@ -18,6 +20,7 @@ export default function RootLayout({ children }) {
         
         <main className="flex-grow-1">
           {children}
+          <FloatingChatWidget/>
         </main>
         <Footer/>
         
