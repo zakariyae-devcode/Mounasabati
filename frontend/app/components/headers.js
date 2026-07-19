@@ -45,7 +45,7 @@ export default function Header() {
               <a href="/about" className="text-decoration-none fw-bold px-2 andalusian-font" style={{ color: '#d4af37', fontSize: '20px' }}>
                 المميزات
               </a>
-              <a href="#booking" className="text-decoration-none fw-bold px-2 andalusian-font" style={{ color: '#d4af37', fontSize: '20px' }}>
+              <a href="/services" className="text-decoration-none fw-bold px-2 andalusian-font" style={{ color: '#d4af37', fontSize: '20px' }}>
                 حجز موعد
               </a>
               <a href="#contact" className="text-decoration-none fw-bold px-2 andalusian-font" style={{ color: '#d4af37', fontSize: '20px' }}>
