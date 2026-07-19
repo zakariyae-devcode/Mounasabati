@@ -1,7 +1,7 @@
 import React from 'react';
-import LoginForm from '../components/Login/LoginForm';
+import RegisterForm from '../components/Register/RegisterForm';
 
-export default function LoginPage() {
+export default function RegisterPage() {
   return (
     <div 
       className="container-fluid min-vh-100 d-flex justify-content-center align-items-center py-5" 
@@ -11,7 +11,7 @@ export default function LoginPage() {
         backgroundImage: 'radial-gradient(circle at center, rgba(94, 23, 119, 0.03) 0%, transparent 70%)'
       }}
     >
-      <LoginForm />
+      <RegisterForm />
     </div>
   );
 }

@@ -51,7 +51,7 @@ export default function Header() {
               <a href="/booking" className="text-decoration-none fw-bold px-2 andalusian-font" style={{ color: '#d4af37', fontSize: '20px' }}>
                 حجز موعد
               </a>
-              <a href="#contact" className="text-decoration-none fw-bold px-2 andalusian-font" style={{ color: '#d4af37', fontSize: '20px' }}>
+              <a href="/contact" className="text-decoration-none fw-bold px-2 andalusian-font" style={{ color: '#d4af37', fontSize: '20px' }}>
                 اتصل بنا
               </a>
             </nav>
@@ -61,12 +61,12 @@ export default function Header() {
               <a href="/login" className="text-decoration-none fw-bold andalusian-font" style={{ color: '#d4af37', fontSize: '20px' }}>
                 تسجيل الدخول
               </a>
-              <button 
+              <a href="/register" 
                 className="btn rounded-pill fw-bold text-white px-4 py-2.5 andalusian-font" 
                 style={{ backgroundColor: '#f39c12', border: 'none', fontSize: '18px' }}
               >
                 إنشاء حساب
-              </button>
+              </a>
             </div>
 
           </div>
