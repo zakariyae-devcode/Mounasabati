@@ -2,6 +2,7 @@ import React from 'react';
 import ClientProfile from '../components/profile/ClientProfile';
 import VendorProfile from '../components/profile/VendorProfile';
 
+
 export default async function ProfilePage() {
   // مستقبلاً: سيتم جلب هذه البيانات من Django REST API أو NextAuth Session
   const currentUser = {
@@ -31,6 +32,11 @@ export default async function ProfilePage() {
       ) : (
         <ClientProfile user={currentUser} />
       )}
+      
     </div>
+    
+
+
+    
   );
 }

@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
-// استدعاء مكوّن تغيير كلمة المرور الذي أنشأناه سابقاً
+import NotificationsDropdown from '../../common/NotificationsDropdown';
+import LogoutButton from '../../common/Logout';
 import ChangePasswordModal from '../ChangePasswordModal';
+
 export default function VendorHeroHeader({ vendorData, onEditClick }) {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
@@ -13,6 +15,7 @@ export default function VendorHeroHeader({ vendorData, onEditClick }) {
         style={{ borderRadius: '24px', backgroundColor: 'rgba(251, 248, 242, 0.96)' }}
         dir="rtl"
       >
+        {/* الغلاف العلوي مع تثبيت الأدوات في الزاوية */}
         <div 
           style={{ 
             height: '160px', 
@@ -20,8 +23,18 @@ export default function VendorHeroHeader({ vendorData, onEditClick }) {
             position: 'relative'
           }}
         >
-          <div className="position-absolute bottom-0 start-0 w-100 p-3 opacity-15 text-white">
+          {/* خلفية جمالية */}
+          <div className="position-absolute bottom-0 start-0 p-3 opacity-15 text-white">
             <i className="bi bi-patch-check-fill fs-1" />
+          </div>
+
+          {/* شريط الإشعارات وتجريب الخروج مثبت بالزاوية اليسرى من الغلاف */}
+             <div 
+            className="position-absolute top-0 left-0 p-3 d-flex align-items-center gap-2"
+            style={{ left: '15px', zIndex: 10 }}
+          >
+            <NotificationsDropdown />
+            <LogoutButton />
           </div>
         </div>
 
@@ -40,7 +53,7 @@ export default function VendorHeroHeader({ vendorData, onEditClick }) {
               )}
             </div>
 
-            {/* تفاصيل الهوية التجاري */}
+            {/* تفاصيل الهوية التجارية */}
             <div className="text-center text-md-start flex-grow-1">
               <div className="d-flex align-items-center justify-content-center justify-content-md-start gap-2">
                 <h3 className="fw-bold m-0" style={{ color: '#3D0B4F' }}>
@@ -64,7 +77,6 @@ export default function VendorHeroHeader({ vendorData, onEditClick }) {
                 <span>إعدادات المتجر</span>
               </button>
 
-              {/* زر تغيير كلمة السر الخاص بمزود الخدمة */}
               <button 
                 onClick={() => setIsPasswordModalOpen(true)}
                 className="btn btn-outline-secondary px-3 py-2 fw-bold d-flex align-items-center gap-2"
