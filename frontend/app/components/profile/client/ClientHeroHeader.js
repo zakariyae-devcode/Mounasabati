@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
-import NotificationsDropdown from '../../common/NotificationsDropdown';
-import LogoutButton from '../../common/Logout';
+import NotificationsDropdown from '../../Notification/NotificationsDropdown';
+import LogoutButton from '../../Logout/LogoutButton';
 import ChangePasswordModal from '../ChangePasswordModal';
 
 export default function ClientHeroHeader({ profileData, onEditClick }) {
