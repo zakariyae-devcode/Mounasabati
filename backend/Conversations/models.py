@@ -1,8 +1,9 @@
 from django.db import models
 
 from Accounts.models import Users
-
+import uuid
 class Message(models.Model):
+    id= models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     sender = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="sent_messages")
     receiver = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="received_messages")
 

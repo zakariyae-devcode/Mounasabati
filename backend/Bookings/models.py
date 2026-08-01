@@ -1,14 +1,17 @@
 from django.db import models
 from Accounts.models import Users
 from Services.models import Service
+import uuid
 # Create your models here.
-class Booking(models.Model):
-    class BookingStatus(models.TextChoices): # 👈 إصلاح الإملاء
+class BookingStatus(models.TextChoices): # 👈 إصلاح الإملاء
         PENDING = 'pending', 'في انتظار الموافقة'
         CONFIRMED = 'confirmed', 'مؤكد'
         CANCELLED = 'cancelled', 'ملغي'
         COMPLETED = 'completed', 'مكتمل'
+class Booking(models.Model):
     
+
+    id= models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     client = models.ForeignKey(Users, on_delete=models.CASCADE, limit_choices_to={'role': 'client'}, related_name="bookings")
     service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='bookings')
     

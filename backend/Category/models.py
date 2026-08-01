@@ -4,6 +4,7 @@ import uuid
 from django.utils.text import slugify
 
 class Categorys(models.Model):
+    id= models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     name=models.CharField(max_length=255,unique=True)
     slug=models.SlugField(max_length=255,unique=True,allow_unicode=True ,blank=True)
     image=models.ImageField(upload_to='categories/',null=True,blank=True)

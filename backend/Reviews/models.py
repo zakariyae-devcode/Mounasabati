@@ -4,8 +4,9 @@ from Services.models import Service
 # Create your models here.
 from django.db import models
 # افترضنا أن Users و Service مستوردة لديك بالفعل
-
+import uuid
 class Review(models.Model): # 👈 تصحيح الإملاء (Review)
+    id= models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     client = models.ForeignKey(Users, on_delete=models.CASCADE, limit_choices_to={'role': 'client'}, related_name="reviews")
     service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name="reviews")
     

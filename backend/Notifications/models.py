@@ -1,11 +1,15 @@
 from django.db import models
 from Accounts.models import Users
-class Notification(models.Model):
-    class NotificationType(models.TextChoices):
+import uuid
+
+
+class NotificationType(models.TextChoices):
         BOOKING_NEW = 'booking_new', 'حجز جديد قادم'
         BOOKING_UPDATE = 'booking_update', 'تحديث على حالة الحجز'
         MESSAGE_NEW = 'message_new', 'رسالة جديدة'
         SYSTEM_ALERT = 'system_alert', 'تنبيه من الإدارة'
+class Notification(models.Model):
+    id= models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
 
     # المستخدم المستهدف بالتنبيه (الذي ستظهر في حسابه الرسالة)
     user = models.ForeignKey(

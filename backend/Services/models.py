@@ -1,13 +1,12 @@
 from django.db import models
-
-
-
 from Accounts.models import Users
-
-
 from Category.models import Categorys
 
+import uuid
+
+
 class Service(models.Model):
+    id= models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     vendor = models.ForeignKey(Users, on_delete=models.CASCADE,limit_choices_to={'role': 'vendor'},related_name="services")
     category = models.ForeignKey(Categorys, on_delete=models.PROTECT, related_name="services")
     

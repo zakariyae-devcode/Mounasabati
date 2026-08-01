@@ -1,18 +1,22 @@
 from django.db import models
 from Bookings.models import Booking
 
-class Payment(models.Model):
-    class PaymentStatus(models.TextChoices):
+import uuid
+class PaymentStatus(models.TextChoices):
         PENDING = 'pending', 'في انتظار الدفع'
         SUCCESSFUL = 'successful', 'ناجح'
         FAILED = 'failed', 'فاشل'
         REFUNDED = 'refunded', 'مسترجع'
 
-    class PaymentMethod(models.TextChoices):
+class PaymentMethod(models.TextChoices):
         PAYPAL = 'paypal', 'باي بال'
         CARD = 'card', 'بطاقة بنكية'
         CASH = 'cash', 'نقداً / عند الحضور'
 
+class Payment(models.Model):
+
+    id= models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
+   
     # ربط عملية الدفع بحجز واحد محدد
     booking = models.OneToOneField(
         Booking, 

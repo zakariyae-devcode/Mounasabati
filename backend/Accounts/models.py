@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser,BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import RegexValidator
 
-# Create your models here.
+import uuid
 
 
 class UsersManager(BaseUserManager):
@@ -25,6 +25,7 @@ class UsersManager(BaseUserManager):
         return self.create_user(username, email, password, **extra_fields)
     
 class Users(AbstractUser):
+    id= models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     cin_validators=RegexValidator(
         regex=r'^[A-Z]{1,2}[0-9]{6,7}$'
     )
