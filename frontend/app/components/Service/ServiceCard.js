@@ -9,7 +9,7 @@ export default function ServiceCard({ id, title, description, image, icon }) {
   return (
     <div className="col-md-6 col-lg-3 mb-4">
       <Link 
-        href={`/services/${id || '1'}`} 
+        href={`/services/`} 
         className="text-decoration-none d-block h-100"
       >
         <div 
